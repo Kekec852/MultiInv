@@ -77,6 +77,10 @@ public class MultiInvPlayerData {
 	}
 	public void loadNewInventory(Player player){
 		player.getInventory().clear();
+		player.getInventory().setHelmet(null);
+		player.getInventory().setChestplate(null);
+		player.getInventory().setLeggings(null);
+		player.getInventory().setBoots(null);
 		storeWorldInventory(player, player.getWorld());
 	}
 	public void storeWorldInventory(Player player, World world){
@@ -90,13 +94,14 @@ public class MultiInvPlayerData {
 		for (String inventory : plugin.inventories.keySet()){
 			String[] parts = inventory.split(" ");
 			if (parts[0].equals(player.getName())){
-				int i = 0;
+				int i = 1;
 				String worldCheck = "w:" + world.getName();
 				while (i < parts.length){
-					if (parts[1].equals(worldCheck)){
+					if (parts[i].equals(worldCheck)){
 						loadInventory(plugin.inventories.get(inventory), player);
 						return;
 					}
+					i++;
 				}
 			}
 			

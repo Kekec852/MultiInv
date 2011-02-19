@@ -112,7 +112,7 @@ public class MultiInv extends JavaPlugin{
 			 return true;
 		 } else if (split.length == 1) {
 			 if (sender instanceof Player){
-				 if (!Permissions.has((Player) sender, "MultiInv.inv" ) && !sender.isOp()){
+				 if (!Permissions.has((Player) sender, "MultiInv.admin" ) && !sender.isOp()){
 					 sender.sendMessage("You do not have permission to save/load inventories");
 					 return false;
 				 }
@@ -134,12 +134,17 @@ public class MultiInv extends JavaPlugin{
  		}
 	 
 	 public void serialize(){
-		 String filename = "inventories.data";
+		 File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "inventories.data");
+		 String parent = file.getParent();
+		    File dir = new File(parent);
+		    if (!dir.exists()){
+		    	dir.mkdir();
+		    }
 		 FileOutputStream fos = null;
 		 ObjectOutputStream out = null;
 	      	try
 	      	{
-	      		fos = new FileOutputStream(filename);
+	      		fos = new FileOutputStream(file);
 	      		out = new ObjectOutputStream(fos);
 	      		out.writeObject(inventories);
 		        out.close();
@@ -152,12 +157,22 @@ public class MultiInv extends JavaPlugin{
 	 
 	 @SuppressWarnings("unchecked")
 	public void deSerialize(){
-		 String filename = "inventories.data"; 
 		    FileInputStream fis = null;
 		    ObjectInputStream in = null;
+		    File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "inventories.data");
+		    String parent = file.getParent();
+		    File dir = new File(parent);
+		    if (!dir.exists()){
+		    	serialize();
+		    	return;
+		    }
+		    if(!file.exists()){
+		    	serialize();
+		    	return;
+		    }
 		    try
 		    {
-		      fis = new FileInputStream(filename);
+		      fis = new FileInputStream(file);
 		      in = new ObjectInputStream(fis);
 		      inventories = (HashMap<String, MultiInvPlayerItem[][]>) in.readObject();
 		      in.close();
