@@ -1,8 +1,10 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -54,18 +56,22 @@ public class MultiInvReader {
 					MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[0]);
 					return false;
 				}else{
+					if (worldList.contains(worlds[0])){
+						MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[0]);
+						return false;
+					}
 					worldList.add(worlds[0]);
 					int i = 1;
 					while (i < worlds.length){
 						if (plugin.getServer().getWorld(worlds[i]) == null){
-							MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[i]);
+							MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains minor non-existant world " + worlds[i]);
 						}else{
 							if (worldList.contains(worlds[i])){
 								MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
 								return false;
 							}else{
 								minorWorlds.add(plugin.getServer().getWorld(worlds[i]));
-								worldList.add(worlds[0]);
+								worldList.add(worlds[i]);
 							}
 						}
 						i++;
@@ -83,5 +89,49 @@ public class MultiInvReader {
 		}
 		return true;
 	}
+	private ArrayList<String> readLines(File file) {
+	    ArrayList<String> lines = new ArrayList<String>();
+	    try {
+	      BufferedReader input =  new BufferedReader(new FileReader(file));
+	      try {
+	        String line = null; //not declared within while loop
+	        while (( line = input.readLine()) != null){
+	          lines.add(line);
+	        }
+	      }
+	      finally {
+	        input.close();
+	      }
+	    }
+	    catch (IOException ex){
+	      ex.printStackTrace();
+	    }
+	    return lines;
+	  }
+	public ArrayList<String> getWorldPlugins(){
+		File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "worldPlugins.txt");
+		if(!file.exists()){
+			try {
+				file.createNewFile();
+				writeWorldPlugins(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return readLines(file);
+	}
+	
+	 private static void writeWorldPlugins(File file)
+	  {
+		String newline = System.getProperty("line.separator");
+	      try{
+	    	  FileWriter fstream = new FileWriter(file);
+	    	  BufferedWriter out = new BufferedWriter(fstream);
+	    	  out.write("MultiVerse" + newline);
+	    	  out.close();
+	      }catch (Exception e){
+	    	  System.err.println(e.getMessage());
+	      }
+	  }
 	
 }

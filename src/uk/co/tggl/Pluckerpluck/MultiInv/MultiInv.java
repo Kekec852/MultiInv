@@ -33,6 +33,7 @@ public class MultiInv extends JavaPlugin{
 
 	 final MultiInvPlayerListener playerListener = new MultiInvPlayerListener(this);
 	 final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
+	 final MultiInvServerListener serverListener = new MultiInvServerListener(this); 
 	 final MultiInvReader fileReader = new MultiInvReader(this);
 	 public HashMap<String, MultiInvPlayerItem[][]> inventories = new HashMap<String, MultiInvPlayerItem[][]>();
 	 public HashMap<String, World> prevWorlds = new HashMap<String, World>();
@@ -41,6 +42,8 @@ public class MultiInv extends JavaPlugin{
 	 public static PermissionHandler Permissions = null;
 	 public static final Logger log = Logger.getLogger("Minecraft");
 	 public static String pluginName;
+	 public boolean permissionsEnabled = true;
+	 public ArrayList<String> worldPlugins = fileReader.getWorldPlugins();
 	 
 	 public MultiInv(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
 	        super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -55,9 +58,16 @@ public class MultiInv extends JavaPlugin{
 	public void onEnable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		pluginName = pdfFile.getName();
+		Boolean shares = fileReader.parseShares();
+		if (shares == false){
+			MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
+		}else{
+			MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
+		}
 		log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN , playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_TELEPORT , playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
@@ -65,11 +75,6 @@ public class MultiInv extends JavaPlugin{
 		setupPermissions();
 		deSerialize();
 		updateWorlds();
-		Boolean shares = fileReader.parseShares();
-		if (shares == false){
-			this.getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			 public void run() {
 				 for (String player : prevWorlds.keySet()){
@@ -93,8 +98,8 @@ public class MultiInv extends JavaPlugin{
     	    if(perm != null) {
     	    	Permissions = ((Permissions)perm).getHandler();
     	    } else {
-    	    	log.info("["+ pluginName + "] Permission system not enabled. Disabling plugin.");
-    	    	this.getServer().getPluginManager().disablePlugin(this);
+    	    	log.info("["+ pluginName + "] Permission system not enabled. Using ops.txt");
+    	    	permissionsEnabled = false;
     	    }
     	}
     }
@@ -110,7 +115,10 @@ public class MultiInv extends JavaPlugin{
 	
 	 private boolean performCheck(CommandSender sender, String[] split) {	
 		 if (sender instanceof Player){
-			 if (!Permissions.has((Player) sender, "MultiInv.admin" ) && !sender.isOp()){
+			if (permissionsEnabled == true && !Permissions.has((Player) sender, "MultiInv.delete" )){
+				 sender.sendMessage("You do not have permission to manipulate inventories");
+				 return true;
+			 }else if(!sender.isOp()){
 				 sender.sendMessage("You do not have permission to manipulate inventories");
 				 return true;
 			 }
