@@ -89,7 +89,29 @@ public class MultiInvPlayerData {
 		storeWorldInventory(player, player.getWorld());
 	}
 	public void storeWorldInventory(Player player, World world){
-		String inventoryName = player.getName() + " w:" + world.getName();
+		String worldName = world.getName();
+		String inventoryName = player.getName() + " w:" + worldName;
+		if (plugin.sharedNames.contains(worldName)){
+			for (World majorWorld : plugin.sharedWorlds.keySet()){
+				if (majorWorld.equals(world)){
+					inventoryName = player.getName() + " w:" + majorWorld.getName();
+					for (World minorWorld : plugin.sharedWorlds.get(majorWorld)){
+						inventoryName = inventoryName + " w:" + minorWorld.getName();
+					}
+					break;
+				}else{
+					for (World minorWorld : plugin.sharedWorlds.get(majorWorld)){
+						if (minorWorld.equals(world)){
+							inventoryName = player.getName() + " w:" + majorWorld.getName();
+							for (World minorWorld2 : plugin.sharedWorlds.get(majorWorld)){
+								inventoryName = inventoryName + " w:" + minorWorld2.getName();
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
 		MultiInvPlayerItem[][] inventory = saveInventory(player);
 		plugin.inventories.put(inventoryName, inventory);
 		plugin.serialize();

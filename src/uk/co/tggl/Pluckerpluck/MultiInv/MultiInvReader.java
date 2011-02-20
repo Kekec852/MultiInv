@@ -42,18 +42,18 @@ public class MultiInvReader {
 	    }
 	    return lines;
 	  }
-	public void parseShares() {
+	public boolean parseShares() {
 		ArrayList<String> lines = createShares();
 		ArrayList<String> worldList = new ArrayList<String>();
+		ArrayList<World> minorWorlds = new ArrayList<World>();
 		for (String line : lines){
 			String[] content = line.split("#");
 			if (content[0] != ""){
 				String[] worlds = content[0].split(", ");
 				if (plugin.getServer().getWorld(worlds[0]) == null){
 					MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[0]);
-					plugin.getServer().getPluginManager().disablePlugin(plugin);
+					return false;
 				}else{
-					ArrayList<World> minorWorlds = new ArrayList<World>();
 					worldList.add(worlds[0]);
 					int i = 1;
 					while (i < worlds.length){
@@ -62,17 +62,26 @@ public class MultiInvReader {
 						}else{
 							if (worldList.contains(worlds[i])){
 								MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
-								plugin.getServer().getPluginManager().disablePlugin(plugin);
+								return false;
 							}else{
 								minorWorlds.add(plugin.getServer().getWorld(worlds[i]));
 								worldList.add(worlds[0]);
 							}
 						}
+						i++;
 					}	
 				}
-				plugin.sharedWorlds.put(plugin.getServer().getWorld(worlds[0]), (World[]) worldList.toArray());
+				World[] minorWorldArray = new World[minorWorlds.size()];
+				for (int i = 0; i < minorWorlds.size(); i++){
+					minorWorldArray[i] = minorWorlds.get(i);
+				}
+				if (minorWorlds.size()!= 0){
+					plugin.sharedWorlds.put(plugin.getServer().getWorld(worlds[0]),minorWorldArray);
+				}
+				plugin.sharedNames = worldList;
 			}
 		}
+		return true;
 	}
 	
 }

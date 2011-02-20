@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import java.io.ObjectInputStream;
@@ -36,6 +37,7 @@ public class MultiInv extends JavaPlugin{
 	 public HashMap<String, MultiInvPlayerItem[][]> inventories = new HashMap<String, MultiInvPlayerItem[][]>();
 	 public HashMap<String, World> prevWorlds = new HashMap<String, World>();
 	 public HashMap<World, World[]> sharedWorlds = new HashMap<World, World[]>();
+	 public ArrayList<String> sharedNames = new ArrayList<String>();
 	 public static PermissionHandler Permissions = null;
 	 public static final Logger log = Logger.getLogger("Minecraft");
 	 public static String pluginName;
@@ -63,8 +65,11 @@ public class MultiInv extends JavaPlugin{
 		setupPermissions();
 		deSerialize();
 		updateWorlds();
-		fileReader.parseShares();
-		
+		Boolean shares = fileReader.parseShares();
+		if (shares == false){
+			this.getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			 public void run() {
 				 for (String player : prevWorlds.keySet()){
@@ -104,33 +109,30 @@ public class MultiInv extends JavaPlugin{
     }
 	
 	 private boolean performCheck(CommandSender sender, String[] split) {	
-		 Player player = null;
-		 if(sender instanceof Player){
-			 player = (Player)sender;
-		 }else{
-			 return false;
-		 }
-		 if (split.length == 0) {
-			 sender.sendMessage("Use'/MultiInv save' or '/MultiInv load'");
-			 return true;
-		 } else if (split.length == 1) {
-			 if (sender instanceof Player){
-				 if (!Permissions.has((Player) sender, "MultiInv.admin" ) && !sender.isOp()){
-					 sender.sendMessage("You do not have permission to save/load inventories");
-					 return false;
-				 }
+		 if (sender instanceof Player){
+			 if (!Permissions.has((Player) sender, "MultiInv.admin" ) && !sender.isOp()){
+				 sender.sendMessage("You do not have permission to manipulate inventories");
+				 return true;
 			 }
-	
-			 String Str = split[0];
-			 if (Str.equalsIgnoreCase("save")) {
-				 playerInventory.storeWorldInventory(player, player.getWorld());
-				 sender.sendMessage("Inventory Saved");
-			 }else if(Str.equalsIgnoreCase("load")){
-				 playerInventory.loadWorldInventory(player, player.getWorld());
-				 sender.sendMessage("Inventory Loaded");
-			 }else if(Str.equalsIgnoreCase("export")){
-				 serialize();
-				 sender.sendMessage("Exported");
+			 if (split.length == 0) {
+				 sender.sendMessage("Use '/MultiInv delete <playerName>' to remove inventories'");
+				 return true;
+			 } else{
+		
+				 String Str = split[0];
+				 if(Str.equalsIgnoreCase("delete")){
+					 if(split.length==1){
+						 sender.sendMessage("Please name a player to delete");
+						 return true;
+					 }
+					 if (deleteInventory(split[1])){
+						 sender.sendMessage("Player " + split[1] + " Deleted");
+						 return true;
+					 }else{
+						 sender.sendMessage("Player " + split[1] + " does not exist");
+						 return true;
+					 }
+				 }
 			 }
 		 }
 	        return true;
@@ -195,5 +197,17 @@ public class MultiInv extends JavaPlugin{
 		 for (Player player : players){
 			 prevWorlds.put(player.getName(), player.getWorld());
 		 }
+	 }
+	 
+	 public boolean deleteInventory(String name){
+		 for (String inventory : inventories.keySet()){
+				String[] parts = inventory.split(" ");
+				if (parts[0].equalsIgnoreCase(name)){
+					inventories.remove(inventory);
+					serialize();
+					return true;
+				}
+		 }
+		 return false;
 	 }
 }
