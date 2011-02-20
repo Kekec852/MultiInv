@@ -33,7 +33,7 @@ public class MultiInv extends JavaPlugin{
 
 	 final MultiInvPlayerListener playerListener = new MultiInvPlayerListener(this);
 	 final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
-	 final MultiInvServerListener serverListener = new MultiInvServerListener(this); 
+	 final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
 	 final MultiInvReader fileReader = new MultiInvReader(this);
 	 public HashMap<String, MultiInvPlayerItem[][]> inventories = new HashMap<String, MultiInvPlayerItem[][]>();
 	 public HashMap<String, World> prevWorlds = new HashMap<String, World>();
@@ -43,7 +43,6 @@ public class MultiInv extends JavaPlugin{
 	 public static final Logger log = Logger.getLogger("Minecraft");
 	 public static String pluginName;
 	 public boolean permissionsEnabled = true;
-	 public ArrayList<String> worldPlugins = fileReader.getWorldPlugins();
 	 
 	 public MultiInv(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
 	        super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -67,7 +66,7 @@ public class MultiInv extends JavaPlugin{
 		log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Normal, this);
+		pm.registerEvent(Event.Type.WORLD_LOADED, worldListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN , playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_TELEPORT , playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);

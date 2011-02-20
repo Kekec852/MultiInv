@@ -1,10 +1,8 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -89,7 +87,7 @@ public class MultiInvReader {
 		}
 		return true;
 	}
-	private ArrayList<String> readLines(File file) {
+	public ArrayList<String> readLines(File file) {
 	    ArrayList<String> lines = new ArrayList<String>();
 	    try {
 	      BufferedReader input =  new BufferedReader(new FileReader(file));
@@ -107,31 +105,6 @@ public class MultiInvReader {
 	      ex.printStackTrace();
 	    }
 	    return lines;
-	  }
-	public ArrayList<String> getWorldPlugins(){
-		File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "worldPlugins.txt");
-		if(!file.exists()){
-			try {
-				file.createNewFile();
-				writeWorldPlugins(file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return readLines(file);
-	}
-	
-	 private static void writeWorldPlugins(File file)
-	  {
-		String newline = System.getProperty("line.separator");
-	      try{
-	    	  FileWriter fstream = new FileWriter(file);
-	    	  BufferedWriter out = new BufferedWriter(fstream);
-	    	  out.write("MultiVerse" + newline);
-	    	  out.close();
-	      }catch (Exception e){
-	    	  System.err.println(e.getMessage());
-	      }
 	  }
 	
 }
