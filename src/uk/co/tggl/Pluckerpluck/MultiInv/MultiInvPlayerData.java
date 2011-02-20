@@ -70,6 +70,11 @@ public class MultiInvPlayerData {
 		ItemStack[] inventoryS = objectToInventorySlots(inventory[0]);
 		ItemStack[] armourS = objectToArmourSlots(inventory[1]);
 		player.getInventory().setContents(inventoryS);
+		for (int i= 0; i<armourS.length; i++){
+			if (armourS[i].getAmount()==0){
+				armourS[i] = null;
+			}
+		}
 		player.getInventory().setHelmet(armourS[3]);
 		player.getInventory().setChestplate(armourS[2]);
 		player.getInventory().setLeggings(armourS[1]);

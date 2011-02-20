@@ -14,9 +14,10 @@ public class MultiInvPlayerListener extends PlayerListener{
 	
 	public void onPlayerJoin(PlayerEvent event){
 		plugin.prevWorlds.put(event.getPlayer().getName(), event.getPlayer().getWorld());
-		plugin.playerInventory.storeWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
+		plugin.playerInventory.loadWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
 	}
 	public void onPlayerQuit(PlayerEvent event){
+		plugin.playerInventory.storeWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
 		plugin.prevWorlds.remove(event.getPlayer().getName());
 	}
 	

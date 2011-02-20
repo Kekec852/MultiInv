@@ -32,8 +32,10 @@ public class MultiInv extends JavaPlugin{
 
 	 final MultiInvPlayerListener playerListener = new MultiInvPlayerListener(this);
 	 final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
+	 final MultiInvReader fileReader = new MultiInvReader(this);
 	 public HashMap<String, MultiInvPlayerItem[][]> inventories = new HashMap<String, MultiInvPlayerItem[][]>();
 	 public HashMap<String, World> prevWorlds = new HashMap<String, World>();
+	 public HashMap<World, World[]> sharedWorlds = new HashMap<World, World[]>();
 	 public static PermissionHandler Permissions = null;
 	 public static final Logger log = Logger.getLogger("Minecraft");
 	 public static String pluginName;
@@ -44,7 +46,7 @@ public class MultiInv extends JavaPlugin{
 
 	@Override
 	public void onDisable() {
-		log.info("["+ pluginName + "] Disabling plugin.");
+		log.info("["+ pluginName + "] Plugin disabled.");
 	}
 
 	@Override
@@ -61,6 +63,7 @@ public class MultiInv extends JavaPlugin{
 		setupPermissions();
 		deSerialize();
 		updateWorlds();
+		fileReader.parseShares();
 		
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			 public void run() {
@@ -159,7 +162,7 @@ public class MultiInv extends JavaPlugin{
 	public void deSerialize(){
 		    FileInputStream fis = null;
 		    ObjectInputStream in = null;
-		    File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "inventories.data");
+			File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "inventories.data");
 		    String parent = file.getParent();
 		    File dir = new File(parent);
 		    if (!dir.exists()){
