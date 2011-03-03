@@ -22,6 +22,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijiko.permissions.PermissionHandler;
 import org.bukkit.plugin.Plugin;
+
+import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
 /**
  * MultiInv for Bukkit
  *
@@ -32,6 +34,7 @@ public class MultiInv extends JavaPlugin{
      final MultiInvPlayerListener playerListener = new MultiInvPlayerListener(this);
      final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
+     final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
      public ConcurrentHashMap<String, MultiInvPlayerItem[][]> inventories = new ConcurrentHashMap<String, MultiInvPlayerItem[][]>();
      public ConcurrentHashMap<String, World> prevWorlds = new ConcurrentHashMap<String, World>();
@@ -41,6 +44,8 @@ public class MultiInv extends JavaPlugin{
      public static final Logger log = Logger.getLogger("Minecraft");
      public static String pluginName;
      public boolean permissionsEnabled = true;
+     
+
      
     @Override
     public void onDisable() {
@@ -81,8 +86,11 @@ public class MultiInv extends JavaPlugin{
                      Player realPlayer = getServer().getPlayer(player);
                      if (prevWorlds.get(player).equals(realPlayer.getWorld())){    
                      }else{
-                         playerInventory.storeWorldInventory(realPlayer, prevWorlds.get(player));
-                         playerInventory.loadWorldInventory(realPlayer, realPlayer.getWorld());
+                    	 World prevWorld = prevWorlds.get(player);
+                    	 World nowWorld = realPlayer.getWorld();
+                    	 debugger.debug(MultiInvEvent.WORLD_CHANGE, new String[]{prevWorld.getName(), nowWorld.getName()});
+                         playerInventory.storeWorldInventory(realPlayer, prevWorld);
+                         playerInventory.loadWorldInventory(realPlayer, nowWorld);
                          prevWorlds.put(realPlayer.getName(), realPlayer.getWorld());
 
                      }
