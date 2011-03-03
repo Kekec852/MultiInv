@@ -135,7 +135,11 @@ public class MultiInv extends JavaPlugin{
                      }
                      int invs = deleteInventory(split[1]);
                      if (invs != 0){
-                         sender.sendMessage("Deleted " + invs + " invetories for player " + split[1]);
+                    	 if (invs == 1){
+                    		 sender.sendMessage("Deleted 1 invetory for player " + split[1]);
+                    	 }else{
+                    		 sender.sendMessage("Deleted " + invs + " invetories for player " + split[1]);
+                    	 }
                          return true;
                      }else{
                          sender.sendMessage("Player " + split[1] + " does not exist");
