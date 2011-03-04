@@ -25,13 +25,15 @@ public final MultiInv plugin;
     	
     }
     
-    public void debug(MultiInvEvent event, String[] args){
+    public void debugEvent(MultiInvEvent event, String[] args){
+    	String message = "";
+    	String message2 = "";
     	if (debugging == true){
     		switch (event){
     			case WORLD_CHANGE:
-    				String message = dividerStart + args[0] + " changed world" + dividerEnd;
+    				message = dividerStart + args[0] + " changed world" + dividerEnd;
     				int shareNumber = shareCheck(args[1], args[2]);
-    				String message2 = "";
+    				message2 = "";
     				switch (shareNumber){
     					case 0:
     						message2 = "Moved from " + args[1] + " to " + args[2];
@@ -48,10 +50,22 @@ public final MultiInv plugin;
     					case 4:
     						message2 = "Moved from" + args[1] + " to " + args[2] + " (Shared)";
     						break;
+    					default:
+    						message2 = "Error with WORLD_CHANAGE debug event";
+    						break;
     				}
     				sendDebuggersMessage(message);
     				sendDebuggersMessage(message2);
     				break;
+    			case INVENTORY_SAVE:
+    				message  = "Saved '" + args[0] + "'";
+    				sendDebuggersMessage(message);
+    				break;
+    			default:
+    				message2 = "Error with "+ event.toString() + " debug event";
+    				sendDebuggersMessage(message);
+    				break;
+    				
     		}
     	}
     }

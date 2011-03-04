@@ -88,7 +88,7 @@ public class MultiInv extends JavaPlugin{
                      }else{
                     	 World prevWorld = prevWorlds.get(player);
                     	 World nowWorld = realPlayer.getWorld();
-                    	 debugger.debug(MultiInvEvent.WORLD_CHANGE, 
+                    	 debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
                     			 new String[]{player, prevWorld.getName(), nowWorld.getName()});
                          playerInventory.storeWorldInventory(realPlayer, prevWorld);
                          playerInventory.loadWorldInventory(realPlayer, nowWorld);
