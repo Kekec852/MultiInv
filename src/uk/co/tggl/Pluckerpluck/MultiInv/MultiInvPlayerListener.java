@@ -19,6 +19,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     public void onPlayerQuit(PlayerEvent event){
         plugin.playerInventory.storeWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
         plugin.prevWorlds.remove(event.getPlayer().getName());
+        plugin.debugger.removeDebuger(event.getPlayer());
     }
     
 }

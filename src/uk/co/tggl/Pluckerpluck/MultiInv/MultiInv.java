@@ -52,6 +52,7 @@ public class MultiInv extends JavaPlugin{
     	for (Player player : this.getServer().getOnlinePlayers()){
     		playerInventory.storeWorldInventory(player, player.getWorld());
     	}
+    	debugger.saveDebugLog();
         log.info("["+ pluginName + "] Plugin disabled.");
     }
 

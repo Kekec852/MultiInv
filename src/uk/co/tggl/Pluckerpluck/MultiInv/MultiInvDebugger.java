@@ -1,5 +1,8 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 import org.bukkit.World;
@@ -15,7 +18,8 @@ public final MultiInv plugin;
 	private ArrayList<Player> debuggers;
 	private String dividerStart = "#-----";
 	private String dividerEnd = "-----#";
-	
+	private ArrayList<String> logHistory;
+	private boolean debugLogging = true;
    
     public MultiInvDebugger(MultiInv instance) {
         plugin = instance;
@@ -38,9 +42,16 @@ public final MultiInv plugin;
     }
     
     public void stopDebugging (){
+    	saveDebugLog();
     	debuggers.clear();
     	debugging = false;
     }
+    public void saveDebugLog(){
+    	if (debugLogging){
+    		logToFile();
+    	}
+    }
+    
     
     public void debugEvent(MultiInvEvent event, String[] args){
     	String message = "";
@@ -119,6 +130,9 @@ public final MultiInv plugin;
     	for (Player player : debuggers){
     		player.sendMessage(message);
     	}
+    	if (debugLogging){
+    		logHistory.add(message);
+    	}
     }
     
     private int shareCheck(String world1, String world2){
@@ -146,5 +160,31 @@ public final MultiInv plugin;
 			return 2;
 		}
     	return 0;
+    }
+    
+    private void logToFile() {
+        File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "logs"+ File.separator + "debugLog.txt");
+        String parent = file.getParent();
+        File dir = new File(parent);
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+        int i=1;
+        while(file.exists()){
+        	file = new File("plugins" + File.separator + "MultiInv" + File.separator + "logs"+ File.separator + "debugLog"+i+".txt");
+        }
+        //Print to file
+        try{
+            // Create file 
+            FileWriter fstream = new FileWriter(file);
+            BufferedWriter out = new BufferedWriter(fstream);
+            for (String line : logHistory){
+            	out.write(line);
+            }
+            //Close the output stream
+            out.close();
+            }catch (Exception e){//Catch exception if any
+              System.err.println("MultiInv Error: " + e.getMessage());
+            }
     }
 }
