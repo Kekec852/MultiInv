@@ -66,6 +66,7 @@ public class MultiInv extends JavaPlugin{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
         }else{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
+            cleanWorldInventories();
         }
         
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
@@ -79,9 +80,6 @@ public class MultiInv extends JavaPlugin{
         setupPermissions();
         deSerialize();
         updateWorlds();
-        deleteUnusedInventories();
-        renameIncompleteInventories();
-        serialize();
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
              public void run() {
                  for (String player : prevWorlds.keySet()){
@@ -161,7 +159,7 @@ public class MultiInv extends JavaPlugin{
          	            	if (split.length >= 2){
  	        	            	if (split[1].equalsIgnoreCase("start")){
  	        	            		if (split.length >= 3 && split[2].equalsIgnoreCase("show")){
- 		        	            		debugger.addDebuger((Player)sender);
+ 		        	            		debugger.addDebugger((Player)sender);
  		        	            		sender.sendMessage("Debugging started (shown)");
  		        	            		return true;
  		        	            	}else{
@@ -333,5 +331,12 @@ public class MultiInv extends JavaPlugin{
     		 }
     	 }
     	 
+     }
+     
+     public void cleanWorldInventories(){
+    	 deleteUnusedInventories();
+         renameIncompleteInventories();
+         serialize();
+         return;
      }
 }

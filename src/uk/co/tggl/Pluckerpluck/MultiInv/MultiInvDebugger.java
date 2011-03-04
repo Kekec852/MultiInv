@@ -25,14 +25,14 @@ public final MultiInv plugin;
         plugin = instance;
     }
     
-    public void addDebuger (Player player){
+    public void addDebugger (Player player){
     	if (!(debuggers.contains(player))){
     		debuggers.add(player);
     		debugging=true;
     	}
     }
     
-    public void removeDebuger (Player player){
+    public void removeDebugger (Player player){
     	if (debuggers.contains(player)){
     		debuggers.remove(player);
     		if (debuggers.isEmpty()){

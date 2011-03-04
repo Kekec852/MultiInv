@@ -22,7 +22,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGOUT, new String[]{event.getPlayer().getName()});
         plugin.playerInventory.storeWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
         plugin.prevWorlds.remove(event.getPlayer().getName());
-        plugin.debugger.removeDebuger(event.getPlayer());
+        plugin.debugger.removeDebugger(event.getPlayer());
     }
     
 }

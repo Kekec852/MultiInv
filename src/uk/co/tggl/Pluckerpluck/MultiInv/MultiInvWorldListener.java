@@ -20,6 +20,7 @@ public class MultiInvWorldListener extends WorldListener{
                 return;
             }
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
+            plugin.cleanWorldInventories();
         
     }
 }
