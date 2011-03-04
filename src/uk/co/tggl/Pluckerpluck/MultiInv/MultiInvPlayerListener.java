@@ -4,6 +4,8 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
+
 public class MultiInvPlayerListener extends PlayerListener{
     
     public final MultiInv plugin;
@@ -17,6 +19,7 @@ public class MultiInvPlayerListener extends PlayerListener{
         plugin.playerInventory.loadWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
     }
     public void onPlayerQuit(PlayerEvent event){
+    	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGOUT, new String[]{event.getPlayer().getName()});
         plugin.playerInventory.storeWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
         plugin.prevWorlds.remove(event.getPlayer().getName());
         plugin.debugger.removeDebuger(event.getPlayer());

@@ -15,10 +15,10 @@ public class MultiInvDebugger {
 public final MultiInv plugin;
 
 	private boolean debugging = false;
-	private ArrayList<Player> debuggers;
+	private ArrayList<Player> debuggers = new ArrayList<Player>();
 	private String dividerStart = "#-----";
 	private String dividerEnd = "-----#";
-	private ArrayList<String> logHistory;
+	private ArrayList<String> logHistory = new ArrayList<String>();
 	private boolean debugLogging = true;
    
     public MultiInvDebugger(MultiInv instance) {
@@ -51,7 +51,7 @@ public final MultiInv plugin;
     	debugging = false;
     }
     public void saveDebugLog(){
-    	if (debugLogging){
+    	if (debugLogging && debugging){
     		logToFile();
     		logHistory.clear();
     	}
@@ -122,6 +122,10 @@ public final MultiInv plugin;
     				message  = "'" + args[0] + "' has been added";
     				sendDebuggersMessage(message);
     				break;
+    			case PLAYER_LOGOUT:
+    				message = dividerStart + args[0] + " logged out" + dividerEnd;
+    				sendDebuggersMessage(message);
+    				break;
     			default:
     				message2 = "Error with "+ event.toString() + " debug event";
     				sendDebuggersMessage(message);
@@ -132,8 +136,10 @@ public final MultiInv plugin;
     }
     
     private void sendDebuggersMessage(String message){
-    	for (Player player : debuggers){
-    		player.sendMessage(message);
+    	if (!(debuggers.isEmpty())){
+	    	for (Player player : debuggers){
+	    		player.sendMessage(message);
+	    	}
     	}
     	if (debugLogging){
     		logHistory.add(message);
@@ -144,14 +150,14 @@ public final MultiInv plugin;
     	if (plugin.sharedNames.contains(world1)){
     		if (plugin.sharedNames.contains(world2)){
     			if (plugin.sharedWorlds.containsKey(plugin.getServer().getWorld(world1))){
-    				for (World world : plugin.sharedWorlds.get(world1)){
+    				for (World world : plugin.sharedWorlds.get(plugin.getServer().getWorld(world1))){
     					if (world.getName().equals(world2)){
     						return 4;
     					}
     				}
     			}
     			if (plugin.sharedWorlds.containsKey(plugin.getServer().getWorld(world2))){
-    				for (World world : plugin.sharedWorlds.get(world2)){
+    				for (World world : plugin.sharedWorlds.get(plugin.getServer().getWorld(world2))){
     					if (world.getName().equals(world1)){
     						return 4;
     					}
@@ -177,19 +183,24 @@ public final MultiInv plugin;
         int i=1;
         while(file.exists()){
         	file = new File("plugins" + File.separator + "MultiInv" + File.separator + "logs"+ File.separator + "debugLog"+i+".txt");
+        	i++;
         }
+        if (!(logHistory.isEmpty())){
         //Print to file
-        try{
+        	try{
             // Create file 
-            FileWriter fstream = new FileWriter(file);
-            BufferedWriter out = new BufferedWriter(fstream);
-            for (String line : logHistory){
-            	out.write(line);
-            }
-            //Close the output stream
-            out.close();
-            }catch (Exception e){//Catch exception if any
-              System.err.println("MultiInv Error: " + e.getMessage());
-            }
+	            FileWriter fstream = new FileWriter(file);
+	            BufferedWriter out = new BufferedWriter(fstream);
+	            for (String line : logHistory){
+	            	if (line != null){
+	            		out.write(line + System.getProperty("line.separator"));
+	            	}
+	            }
+	            //Close the output stream
+	            out.close();
+	            }catch (Exception e){//Catch exception if any
+	              System.err.println("MultiInv Error: " + e.getMessage());
+	            }
+        	}
     }
 }

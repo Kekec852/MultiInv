@@ -117,8 +117,8 @@ public class MultiInvPlayerData {
         }
         MultiInvPlayerItem[][] inventory = saveInventory(player);
         plugin.inventories.put(inventoryName, inventory);
-        plugin.serialize();
         plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_SAVE, new String[]{inventoryName});
+        plugin.serialize();
     }
     
     public void loadWorldInventory(Player player, World world){
