@@ -88,6 +88,7 @@ public class MultiInvPlayerData {
         player.getInventory().setChestplate(null);
         player.getInventory().setLeggings(null);
         player.getInventory().setBoots(null);
+        plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_NEW, new String[]{player.getName()});
         storeWorldInventory(player, player.getWorld());
     }
     public void storeWorldInventory(Player player, World world){
@@ -131,6 +132,7 @@ public class MultiInvPlayerData {
                 while (i < parts.length){
                     if (parts[i].equals(worldCheck)){
                         loadInventory(plugin.inventories.get(inventory), player);
+                        plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
                         return;
                     }
                     i++;

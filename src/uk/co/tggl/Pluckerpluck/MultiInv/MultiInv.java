@@ -177,17 +177,18 @@ public class MultiInv extends JavaPlugin{
             }
          FileOutputStream fos = null;
          ObjectOutputStream out = null;
-              try
-              {
-                  fos = new FileOutputStream(file);
-                  out = new ObjectOutputStream(fos);
-                  out.writeObject(inventories);
-                out.close();
-              }
-              catch(IOException ex)
-              {
-                  ex.printStackTrace();
-              }
+          try
+          {
+              fos = new FileOutputStream(file);
+              out = new ObjectOutputStream(fos);
+              out.writeObject(inventories);
+            out.close();
+          }
+          catch(IOException ex)
+          {
+              ex.printStackTrace();
+          }
+          debugger.debugEvent(MultiInvEvent.FILE_SAVE, new String[]{});
      }
      
      @SuppressWarnings("unchecked")
@@ -220,6 +221,7 @@ public class MultiInv extends JavaPlugin{
             {
               ex.printStackTrace();
             }
+            debugger.debugEvent(MultiInvEvent.FILE_LOAD, new String[]{});
      }
      
      public void updateWorlds(){
@@ -227,6 +229,7 @@ public class MultiInv extends JavaPlugin{
          for (Player player : players){
              prevWorlds.put(player.getName(), player.getWorld());
          }
+         debugger.debugEvent(MultiInvEvent.PLAYERS_UPDATE, new String[]{});
      }
      
      public int deleteInventory(String name){
@@ -234,6 +237,7 @@ public class MultiInv extends JavaPlugin{
          for (String inventory : inventories.keySet()){
                 String[] parts = inventory.split(" ");
                 if (parts[0].equalsIgnoreCase(name)){
+                	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
                     inventories.remove(inventory);
                     i++;
                 }
@@ -248,7 +252,9 @@ public class MultiInv extends JavaPlugin{
      			 String inventoryName = parts[0] + " " + parts[1];
      			 MultiInvPlayerItem[][] tempInv = inventories.get(inventory);
                   inventories.remove(inventory);
+                  debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
                   inventories.put(inventoryName,tempInv);
+                  debugger.debugEvent(MultiInvEvent.INVENTORY_ADDED, new String[]{inventoryName});
      			 continue;
      		 }
     		  for (World majorWorld : sharedWorlds.keySet()){
@@ -256,6 +262,7 @@ public class MultiInv extends JavaPlugin{
     				  String worldName = "w:" + minorWorld.getName();
     	              if (parts[1].equals(worldName)){
     	            	  inventories.remove(inventory);
+    	            	  debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
     	                  break;
     	              }
     			  }
@@ -275,7 +282,9 @@ public class MultiInv extends JavaPlugin{
                      }
                      MultiInvPlayerItem[][] tempInv = inventories.get(inventory);
                      inventories.remove(inventory);
+                     debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
                      inventories.put(inventoryName,tempInv);
+                     debugger.debugEvent(MultiInvEvent.INVENTORY_ADDED, new String[]{inventoryName});
                      break;
     			 }
     		 }

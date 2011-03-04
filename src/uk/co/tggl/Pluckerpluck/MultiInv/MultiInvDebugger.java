@@ -22,7 +22,24 @@ public final MultiInv plugin;
     }
     
     public void addDebuger (Player player){
-    	
+    	if (!(debuggers.contains(player))){
+    		debuggers.add(player);
+    		debugging=true;
+    	}
+    }
+    
+    public void removeDebuger (Player player){
+    	if (debuggers.contains(player)){
+    		debuggers.remove(player);
+    		if (debuggers.isEmpty()){
+    			stopDebugging();
+    		}
+    	}
+    }
+    
+    public void stopDebugging (){
+    	debuggers.clear();
+    	debugging = false;
     }
     
     public void debugEvent(MultiInvEvent event, String[] args){
@@ -59,6 +76,34 @@ public final MultiInv plugin;
     				break;
     			case INVENTORY_SAVE:
     				message  = "Saved '" + args[0] + "'";
+    				sendDebuggersMessage(message);
+    				break;
+    			case INVENTORY_LOAD:
+    				message  = "Loaded '" + args[0] + "'";
+    				sendDebuggersMessage(message);
+    				break;
+    			case INVENTORY_NEW:
+    				message  = "Creating new inventory for '" + args[0] + "'";
+    				sendDebuggersMessage(message);
+    				break;
+    			case FILE_SAVE:
+    				message  = "Saved inventories to file";
+    				sendDebuggersMessage(message);
+    				break;
+    			case FILE_LOAD:
+    				message  = "Loaded inventories from file";
+    				sendDebuggersMessage(message);
+    				break;
+    			case PLAYERS_UPDATE:
+    				message  = "Players list updated";
+    				sendDebuggersMessage(message);
+    				break;
+    			case INVENTORY_DELETE:
+    				message  = "'" + args[0] + "' has been deleted";
+    				sendDebuggersMessage(message);
+    				break;
+    			case INVENTORY_ADDED:
+    				message  = "'" + args[0] + "' has been added";
     				sendDebuggersMessage(message);
     				break;
     			default:
