@@ -92,7 +92,7 @@ public class MultiInvReader {
         try {
           BufferedReader input =  new BufferedReader(new FileReader(file));
           try {
-            String line = null; //not declared within while loop
+            String line = null;
             while (( line = input.readLine()) != null){
               lines.add(line);
             }
