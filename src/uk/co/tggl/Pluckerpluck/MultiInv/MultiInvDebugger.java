@@ -41,6 +41,10 @@ public final MultiInv plugin;
     	}
     }
     
+    public void startDebugging (){
+    	debugging = true;
+    }
+    
     public void stopDebugging (){
     	saveDebugLog();
     	debuggers.clear();
@@ -49,6 +53,7 @@ public final MultiInv plugin;
     public void saveDebugLog(){
     	if (debugLogging){
     		logToFile();
+    		logHistory.clear();
     	}
     }
     

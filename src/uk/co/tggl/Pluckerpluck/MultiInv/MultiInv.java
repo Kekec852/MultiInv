@@ -164,6 +164,38 @@ public class MultiInv extends JavaPlugin{
         		 for (String inventory : inventories.keySet()){
         			 log.info("["+ pluginName + "] " + inventory);
         		 }
+        	 }else if (Str.equalsIgnoreCase("debug")){
+        		 if (sender instanceof Player){
+        	            if (permissionsEnabled == true && Permissions.has((Player) sender, "MultiInv.debug" )){
+        	            	if (split[1].equalsIgnoreCase("start")){
+        	            		if (split[1].equalsIgnoreCase("show")){
+	        	            		debugger.addDebuger((Player)sender);
+	        	            	}else{
+	        	            		debugger.startDebugging();
+	        	            	}
+        	            		sender.sendMessage("Debugging started");
+        	            	}else if (split[1].equalsIgnoreCase("stop")){
+        	            		debugger.stopDebugging();
+        	            		sender.sendMessage("Debugging stopped");
+        	            	}
+        	            	else if (split[1].equalsIgnoreCase("save")){
+        	            		debugger.saveDebugLog();
+        	            		sender.sendMessage("Debugging saved");
+        	            	}
+        	                 return true;
+        	             }
+        		 }else{
+        			 if (split[1].equalsIgnoreCase("stop")){
+ 	            		debugger.stopDebugging();
+ 	            		sender.sendMessage("Debugging stopped");
+ 	            	}else if (split[1].equalsIgnoreCase("start")){
+ 	            		debugger.startDebugging();
+ 	            		sender.sendMessage("Debugging started");
+	            	}else if (split[1].equalsIgnoreCase("save")){
+	            		debugger.saveDebugLog();
+	            		sender.sendMessage("Debugging saved");
+	            	}
+        		 }
         	 }
          }
             return true;
