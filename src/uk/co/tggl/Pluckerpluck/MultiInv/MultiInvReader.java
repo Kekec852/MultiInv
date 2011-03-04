@@ -47,6 +47,7 @@ public class MultiInvReader {
         ArrayList<String> worldList = new ArrayList<String>();
         ArrayList<World> minorWorlds = new ArrayList<World>();
         for (String line : lines){
+        	minorWorlds.clear();
             String[] content = line.split("#");
             if (content[0] != ""){
                 String[] worlds = content[0].split(", ");
@@ -77,7 +78,7 @@ public class MultiInvReader {
                 }
                 World[] minorWorldArray = new World[minorWorlds.size()];
                 for (int i = 0; i < minorWorlds.size(); i++){
-                    minorWorldArray[i] = minorWorlds.get(i);
+                    minorWorldArray[i] = minorWorlds.get(i);                    
                 }
                 if (minorWorlds.size()!= 0){
                     plugin.sharedWorlds.put(plugin.getServer().getWorld(worlds[0]),minorWorldArray);

@@ -81,7 +81,7 @@ public final MultiInv plugin;
     						message2 = "Moved from " + args[1] + "* to " + args[2] + "*";
     						break;
     					case 4:
-    						message2 = "Moved from" + args[1] + " to " + args[2] + " (Shared)";
+    						message2 = "Moved from " + args[1] + " to " + args[2] + " (Shared)";
     						break;
     					default:
     						message2 = "Error with WORLD_CHANAGE debug event";

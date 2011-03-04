@@ -23,6 +23,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijiko.permissions.PermissionHandler;
 import org.bukkit.plugin.Plugin;
 
+
 import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
 /**
  * MultiInv for Bukkit
@@ -44,8 +45,7 @@ public class MultiInv extends JavaPlugin{
      public static final Logger log = Logger.getLogger("Minecraft");
      public static String pluginName;
      public boolean permissionsEnabled = true;
-     
-
+    
      
     @Override
     public void onDisable() {
@@ -66,9 +66,12 @@ public class MultiInv extends JavaPlugin{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
         }else{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
-            cleanWorldInventories();
         }
-        
+        deSerialize();
+        updateWorlds();
+        if (shares){
+        	cleanWorldInventories();
+        }
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
@@ -78,8 +81,6 @@ public class MultiInv extends JavaPlugin{
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
         setupPermissions();
-        deSerialize();
-        updateWorlds();
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
              public void run() {
                  for (String player : prevWorlds.keySet()){
@@ -231,6 +232,7 @@ public class MultiInv extends JavaPlugin{
           }
           debugger.debugEvent(MultiInvEvent.FILE_SAVE, new String[]{});
      }
+     
      
      @SuppressWarnings("unchecked")
     public void deSerialize(){
