@@ -10,6 +10,7 @@ public class MultiInvEnums {
 		INVENTORY_SAVE,
 	    WORLD_CHANGE,
 	    WORLD_LOAD,
+	    PLAYER_LOGIN,
 	    PLAYER_LOGOUT,
 	    PLAYERS_UPDATE,
 	    PLUGIN_ENABLE,
