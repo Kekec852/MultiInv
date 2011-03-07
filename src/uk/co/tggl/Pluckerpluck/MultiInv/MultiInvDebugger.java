@@ -120,6 +120,10 @@ public final MultiInv plugin;
     				message  = "'" + args[0] + "' has been added";
     				sendDebuggersMessage(message);
     				break;
+    			case PLAYER_LOGIN:
+    				message = dividerStart + args[0] + " logged in" + dividerEnd;
+    				sendDebuggersMessage(message);
+    				break;
     			case PLAYER_LOGOUT:
     				message = dividerStart + args[0] + " logged out" + dividerEnd;
     				sendDebuggersMessage(message);
