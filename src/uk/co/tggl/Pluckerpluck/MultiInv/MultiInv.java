@@ -303,7 +303,8 @@ public class MultiInv extends JavaPlugin{
      }
      
      private String convertFormat(String inventory){
-     	String inventory2 = inventory.replaceAll("(?<!\")(\\s.:)", "\" \"w:");
+     	String inventory2 = inventory.replaceAll("\\sw:", "\" \"w:");
+     	inventory2 = inventory2.replaceAll("\\sp:", "\" \"p:");
      	if (!(inventory.equals(inventory2))){
 		 	String[] parts = inventory2.split("\" \"");
 		 	if (parts.length > 2){
