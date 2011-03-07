@@ -66,7 +66,6 @@ public class MultiInvReader {
                                 return false;
                             }else{
                                 plugin.sharesMap.put(worlds[i], worlds[0]);
-                                System.out.println("Shared " + worlds[i] + " to " + worlds[0]);
                             }
                         }
                         i++;
