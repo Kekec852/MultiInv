@@ -45,7 +45,7 @@ public class MultiInvReader {
         ArrayList<String> worldList = new ArrayList<String>();
         for (String line : lines){
             String[] content = line.split("#");
-            if ((content[0].matches("[^\\s]*"))){
+            if (!(content[0].matches("(\\s)*"))){
                 String[] worlds = content[0].split(", ");
                 if (plugin.getServer().getWorld(worlds[0]) == null){
                     MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[0]);
@@ -66,6 +66,7 @@ public class MultiInvReader {
                                 return false;
                             }else{
                                 plugin.sharesMap.put(worlds[i], worlds[0]);
+                                System.out.println("Shared " + worlds[i] + " to " + worlds[0]);
                             }
                         }
                         i++;
