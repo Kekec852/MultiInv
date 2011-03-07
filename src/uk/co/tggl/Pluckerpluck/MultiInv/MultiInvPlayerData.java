@@ -91,7 +91,7 @@ public class MultiInvPlayerData {
         storeWorldInventory(player, player.getWorld().getName());
     }
     public void storeWorldInventory(Player player, String world){
-    	if (plugin.sharesMap.contains(world)){
+    	if (plugin.sharesMap.containsKey(world)){
     		world = plugin.sharesMap.get(world);
     	}
         String inventoryName = player.getName() + "\" \"w:" + world;
@@ -103,17 +103,18 @@ public class MultiInvPlayerData {
     
     public void loadWorldInventory(Player player, String world){
     	boolean newMember = true;
-    	if (plugin.sharesMap.contains(world)){
+    	if (plugin.sharesMap.containsKey(world)){
     		world = plugin.sharesMap.get(world);
     	}
     	String worldCheckName = "w:" + world;
         for (String inventory : plugin.inventories.keySet()){
-            String[] parts = inventory.split(" ");
+            String[] parts = inventory.split("\" \"");
             if (parts[0].equals(player.getName())){
             	newMember = false;
             	if (parts[1].equals(worldCheckName)){
             		loadInventory(plugin.inventories.get(inventory), player);
                     plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
+                    return;
             	}
             }
             

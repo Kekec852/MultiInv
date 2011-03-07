@@ -4,8 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
@@ -147,27 +145,13 @@ public final MultiInv plugin;
     }
     
     private int shareCheck(String world1, String world2){
-    	if (plugin.sharedNames.contains(world1)){
-    		if (plugin.sharedNames.contains(world2)){
-    			if (plugin.sharedWorlds.containsKey(plugin.getServer().getWorld(world1))){
-    				for (World world : plugin.sharedWorlds.get(plugin.getServer().getWorld(world1))){
-    					if (world.getName().equals(world2)){
-    						return 4;
-    					}
-    				}
-    			}
-    			if (plugin.sharedWorlds.containsKey(plugin.getServer().getWorld(world2))){
-    				for (World world : plugin.sharedWorlds.get(plugin.getServer().getWorld(world2))){
-    					if (world.getName().equals(world1)){
-    						return 4;
-    					}
-    				}
-    			}
+    	if (plugin.sharesMap.containsKey(world1)){
+    		if (plugin.sharesMap.containsKey(world2)){
     			return 3;
     		}
-    		return 1;
-    	}
-    	if (plugin.sharedNames.contains(world2)){
+			return 1;
+		}
+    	if (plugin.sharesMap.containsKey(world2)){
 			return 2;
 		}
     	return 0;

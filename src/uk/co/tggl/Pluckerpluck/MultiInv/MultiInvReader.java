@@ -43,11 +43,9 @@ public class MultiInvReader {
     public boolean parseShares() {
         ArrayList<String> lines = createShares();
         ArrayList<String> worldList = new ArrayList<String>();
-        //ArrayList<World> minorWorlds = new ArrayList<World>();
         for (String line : lines){
-        	//minorWorlds.clear();
             String[] content = line.split("#");
-            if (content[0] != ""){
+            if ((content[0].matches("[^(\\s*)]"))){
                 String[] worlds = content[0].split(", ");
                 if (plugin.getServer().getWorld(worlds[0]) == null){
                     MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[0]);
@@ -67,23 +65,12 @@ public class MultiInvReader {
                                 MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
                                 return false;
                             }else{
-                                //minorWorlds.add(plugin.getServer().getWorld(worlds[i]));
-                                plugin.sharesMap.put(worlds[1], worlds[0]);
+                                plugin.sharesMap.put(worlds[i], worlds[0]);
                             }
                         }
                         i++;
                     }    
                 }
-                /*
-                World[] minorWorldArray = new World[minorWorlds.size()];
-                for (int i = 0; i < minorWorlds.size(); i++){
-                    minorWorldArray[i] = minorWorlds.get(i);                    
-                }
-                if (minorWorlds.size()!= 0){
-                    plugin.sharedWorlds.put(plugin.getServer().getWorld(worlds[0]),minorWorldArray);
-                }
-                plugin.sharedNames = worldList;
-                */
             }
         }
         return true;
