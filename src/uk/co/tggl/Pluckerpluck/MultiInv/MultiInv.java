@@ -286,10 +286,12 @@ public class MultiInv extends JavaPlugin{
          return i;
      }
      public void deleteIfUnused(String inventory){
-    	 String[] parts = inventory.split("\" \"w:");
-    	 if (parts.length != 2 || this.sharesMap.containsKey(parts[1])){
-    		inventories.remove(inventory);
- 		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
+    	 String[] parts = inventory.split("\" \".:");
+    	 if (parts[0].matches("^(w:)")){
+	    	 if (parts.length != 2 || this.sharesMap.containsKey(parts[1]) ){
+	    		inventories.remove(inventory);
+	 		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
+	    	 }
     	 }
      }
 
