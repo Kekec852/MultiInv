@@ -1,6 +1,5 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -89,54 +88,33 @@ public class MultiInvPlayerData {
         player.getInventory().setLeggings(null);
         player.getInventory().setBoots(null);
         plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_NEW, new String[]{player.getName()});
-        storeWorldInventory(player, player.getWorld());
+        storeWorldInventory(player, player.getWorld().getName());
     }
-    public void storeWorldInventory(Player player, World world){
-        String worldName = world.getName();
-        String inventoryName = player.getName() + " w:" + worldName;
-        if (plugin.sharedNames.contains(worldName)){
-            for (World majorWorld : plugin.sharedWorlds.keySet()){
-                if (majorWorld.getName().equals(world.getName())){
-                    inventoryName = player.getName() + " w:" + majorWorld.getName();
-                    for (World minorWorld : plugin.sharedWorlds.get(majorWorld)){
-                        inventoryName = inventoryName + " w:" + minorWorld.getName();
-                    }
-                    break;
-                }else{
-                    for (World minorWorld : plugin.sharedWorlds.get(majorWorld)){
-                        if (minorWorld.getName().equals(world.getName())){
-                            inventoryName = player.getName() + " w:" + majorWorld.getName();
-                            for (World minorWorld2 : plugin.sharedWorlds.get(majorWorld)){
-                                inventoryName = inventoryName + " w:" + minorWorld2.getName();
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+    public void storeWorldInventory(Player player, String world){
+    	if (plugin.sharesMap.contains(world)){
+    		world = plugin.sharesMap.get(world);
+    	}
+        String inventoryName = player.getName() + "\" \"w:" + world;
         MultiInvPlayerItem[][] inventory = saveInventory(player);
         plugin.inventories.put(inventoryName, inventory);
         plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_SAVE, new String[]{inventoryName});
         plugin.serialize();
     }
     
-    public void loadWorldInventory(Player player, World world){
+    public void loadWorldInventory(Player player, String world){
     	boolean newMember = true;
+    	if (plugin.sharesMap.contains(world)){
+    		world = plugin.sharesMap.get(world);
+    	}
+    	String worldCheckName = "w:" + world;
         for (String inventory : plugin.inventories.keySet()){
             String[] parts = inventory.split(" ");
             if (parts[0].equals(player.getName())){
             	newMember = false;
-                int i = 1;
-                String worldCheck = "w:" + world.getName();
-                while (i < parts.length){
-                    if (parts[i].equals(worldCheck)){
-                        loadInventory(plugin.inventories.get(inventory), player);
-                        plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
-                        return;
-                    }
-                    i++;
-                }
+            	if (parts[1].equals(worldCheckName)){
+            		loadInventory(plugin.inventories.get(inventory), player);
+                    plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
+            	}
             }
             
         }

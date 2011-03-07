@@ -38,7 +38,8 @@ public class MultiInv extends JavaPlugin{
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
      public ConcurrentHashMap<String, MultiInvPlayerItem[][]> inventories = new ConcurrentHashMap<String, MultiInvPlayerItem[][]>();
-     public ConcurrentHashMap<String, World> prevWorlds = new ConcurrentHashMap<String, World>();
+     public ConcurrentHashMap<String, String> prevWorlds = new ConcurrentHashMap<String, String>();
+     public ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
      public ConcurrentHashMap<World, World[]> sharedWorlds = new ConcurrentHashMap<World, World[]>();
      public ArrayList<String> sharedNames = new ArrayList<String>();
      public static PermissionHandler Permissions = null;
@@ -50,7 +51,7 @@ public class MultiInv extends JavaPlugin{
     @Override
     public void onDisable() {
     	for (Player player : this.getServer().getOnlinePlayers()){
-    		playerInventory.storeWorldInventory(player, player.getWorld());
+    		playerInventory.storeWorldInventory(player, player.getWorld().getName());
     	}
     	
     	debugger.saveDebugLog();
@@ -85,15 +86,15 @@ public class MultiInv extends JavaPlugin{
              public void run() {
                  for (String player : prevWorlds.keySet()){
                      Player realPlayer = getServer().getPlayer(player);
-                     if (prevWorlds.get(player).equals(realPlayer.getWorld())){    
+                     if (prevWorlds.get(player).equals(realPlayer.getWorld().getName())){    
                      }else{
-                    	 World prevWorld = prevWorlds.get(player);
-                    	 World nowWorld = realPlayer.getWorld();
+                    	 String prevWorld = prevWorlds.get(player);
+                    	 String nowWorld = realPlayer.getWorld().getName();
                     	 debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
-                    			 new String[]{player, prevWorld.getName(), nowWorld.getName()});
+                    			 new String[]{player, prevWorld, nowWorld});
                          playerInventory.storeWorldInventory(realPlayer, prevWorld);
                          playerInventory.loadWorldInventory(realPlayer, nowWorld);
-                         prevWorlds.put(realPlayer.getName(), realPlayer.getWorld());
+                         prevWorlds.put(player, nowWorld);
 
                      }
                  }
@@ -143,7 +144,7 @@ public class MultiInv extends JavaPlugin{
                          sender.sendMessage("Please name a player to delete");
                          return true;
                      }
-                     int invs = deleteInventory(split[1]);
+                     int invs = deletePlayerInventories(split[1]);
                      if (invs != 0){
                     	 if (invs == 1){
                     		 sender.sendMessage("Deleted 1 invetory for player " + split[1]);
@@ -270,12 +271,12 @@ public class MultiInv extends JavaPlugin{
      public void updateWorlds(){
          Player[] players = this.getServer().getOnlinePlayers();
          for (Player player : players){
-             prevWorlds.put(player.getName(), player.getWorld());
+             prevWorlds.put(player.getName(), player.getWorld().getName());
          }
          debugger.debugEvent(MultiInvEvent.PLAYERS_UPDATE, new String[]{});
      }
      
-     public int deleteInventory(String name){
+     public int deletePlayerInventories(String name){
     	 int i = 0;
          for (String inventory : inventories.keySet()){
                 String[] parts = inventory.split(" ");
@@ -288,57 +289,37 @@ public class MultiInv extends JavaPlugin{
          serialize();
          return i;
      }
-     public void deleteUnusedInventories(){
-    	  for (String inventory : inventories.keySet()){
-    		  String[] parts = inventory.split(" ");
-    		  if ((!(sharedWorlds.keySet().contains(parts[1].replace("w:", ""))) && parts.length > 2 )|| (sharedWorlds.keySet().contains(parts[1].replace("w:", "")) && sharedWorlds.get(parts[1].replace("w:", "")).length==0)){
-     			 String inventoryName = parts[0] + " " + parts[1];
-     			 MultiInvPlayerItem[][] tempInv = inventories.get(inventory);
-                  inventories.remove(inventory);
-                  debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
-                  inventories.put(inventoryName,tempInv);
-                  debugger.debugEvent(MultiInvEvent.INVENTORY_ADDED, new String[]{inventoryName});
-     			 continue;
-     		 }
-    		  for (World majorWorld : sharedWorlds.keySet()){
-    			  for (World minorWorld : sharedWorlds.get(majorWorld)){
-    				  String worldName = "w:" + minorWorld.getName();
-    	              if (parts[1].equals(worldName)){
-    	            	  inventories.remove(inventory);
-    	            	  debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
-    	                  break;
-    	              }
-    			  }
-    		  }
-       }
-    	 
-       return;
-     }
-     public void renameIncompleteInventories(){
-    	 for (String inventory : inventories.keySet()){
-    		 String[] parts = inventory.split(" ");
-    		 for (World majorWorld : sharedWorlds.keySet()){
-    			 if (parts[1].equals("w:" + majorWorld.getName())){
-    				 String inventoryName = parts[0] + " w:" + majorWorld.getName();
-                     for (World minorWorld : sharedWorlds.get(majorWorld)){
-                         inventoryName = inventoryName + " w:" + minorWorld.getName();
-                     }
-                     MultiInvPlayerItem[][] tempInv = inventories.get(inventory);
-                     inventories.remove(inventory);
-                     debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
-                     inventories.put(inventoryName,tempInv);
-                     debugger.debugEvent(MultiInvEvent.INVENTORY_ADDED, new String[]{inventoryName});
-                     break;
-    			 }
-    		 }
+     public void deleteIfUnused(String inventory){
+    	 String[] parts = inventory.split("\" \"");
+    	 if (parts.length != 2 || this.sharesMap.contains(parts[1])){
+    		inventories.remove(inventory);
+ 		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
     	 }
-    	 
      }
+
      
      public void cleanWorldInventories(){
-    	 deleteUnusedInventories();
-         renameIncompleteInventories();
-         serialize();
+    	 for (String inventory : inventories.keySet()){
+    		 convertFormat(inventory);
+    		 deleteIfUnused(inventory);
+    	 }
+    	 serialize();
          return;
+     }
+     
+     private void convertFormat(String inventory){
+     	String inventory2 = inventory.replaceAll("(?<!\")(\\s)", "\" \"");
+     	if (!(inventory.equals(inventory2))){
+		 	String[] parts = inventory2.split("\" \"");
+		 	if (parts.length > 2){
+		 		inventory2 = parts[0] + "\" \"" + parts[1];
+		 	}
+		 	inventories.put(inventory2, inventories.get(inventory));
+		 	debugger.debugEvent(MultiInvEvent.INVENTORY_ADDED, new String[]{inventory2});
+		 	inventories.remove(inventory);
+		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
+			log.info("["+ pluginName + "] Converted inventory" + inventory + " to " + inventory2);
+     	}
+     	return;
      }
 }

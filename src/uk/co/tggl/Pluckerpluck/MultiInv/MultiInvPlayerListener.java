@@ -1,5 +1,6 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -15,14 +16,19 @@ public class MultiInvPlayerListener extends PlayerListener{
     }
     
     public void onPlayerJoin(PlayerEvent event){
-        plugin.prevWorlds.put(event.getPlayer().getName(), event.getPlayer().getWorld());
-        plugin.playerInventory.loadWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
+    	Player player = event.getPlayer();
+    	String world = player.getWorld().getName();
+        plugin.prevWorlds.put(player.getName(), world);
+        plugin.playerInventory.loadWorldInventory(player, world);
     }
     public void onPlayerQuit(PlayerEvent event){
-    	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGOUT, new String[]{event.getPlayer().getName()});
-        plugin.playerInventory.storeWorldInventory(event.getPlayer(), event.getPlayer().getWorld());
-        plugin.prevWorlds.remove(event.getPlayer().getName());
-        plugin.debugger.removeDebugger(event.getPlayer());
+    	Player player = event.getPlayer();
+    	String playerName = player.getName();
+    	String world = player.getWorld().getName();
+    	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGOUT, new String[]{playerName});
+        plugin.playerInventory.storeWorldInventory(player, world);
+        plugin.prevWorlds.remove(playerName);
+        plugin.debugger.removeDebugger(player);
     }
     
 }

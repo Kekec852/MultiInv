@@ -6,8 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.bukkit.World;
-
 public class MultiInvReader {
     public final MultiInv plugin;
 
@@ -45,9 +43,9 @@ public class MultiInvReader {
     public boolean parseShares() {
         ArrayList<String> lines = createShares();
         ArrayList<String> worldList = new ArrayList<String>();
-        ArrayList<World> minorWorlds = new ArrayList<World>();
+        //ArrayList<World> minorWorlds = new ArrayList<World>();
         for (String line : lines){
-        	minorWorlds.clear();
+        	//minorWorlds.clear();
             String[] content = line.split("#");
             if (content[0] != ""){
                 String[] worlds = content[0].split(", ");
@@ -69,13 +67,14 @@ public class MultiInvReader {
                                 MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
                                 return false;
                             }else{
-                                minorWorlds.add(plugin.getServer().getWorld(worlds[i]));
-                                worldList.add(worlds[i]);
+                                //minorWorlds.add(plugin.getServer().getWorld(worlds[i]));
+                                plugin.sharesMap.put(worlds[1], worlds[0]);
                             }
                         }
                         i++;
                     }    
                 }
+                /*
                 World[] minorWorldArray = new World[minorWorlds.size()];
                 for (int i = 0; i < minorWorlds.size(); i++){
                     minorWorldArray[i] = minorWorlds.get(i);                    
@@ -84,6 +83,7 @@ public class MultiInvReader {
                     plugin.sharedWorlds.put(plugin.getServer().getWorld(worlds[0]),minorWorldArray);
                 }
                 plugin.sharedNames = worldList;
+                */
             }
         }
         return true;
