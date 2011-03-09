@@ -81,7 +81,7 @@ public class MultiInvPlayerData {
         player.getInventory().setLeggings(armourS[1]);
         player.getInventory().setBoots(armourS[0]);
     }
-    public void loadNewInventory(Player player){
+    private void loadNewInventory(Player player){
         player.getInventory().clear();
         player.getInventory().setHelmet(null);
         player.getInventory().setChestplate(null);
@@ -122,5 +122,29 @@ public class MultiInvPlayerData {
         if (!newMember){
         	loadNewInventory(player);
         }
+    }
+    
+    public void storePrivateInventory(Player player, String name){
+    	String inventoryName = player.getName() + "\" \"p:" + name;
+        MultiInvPlayerItem[][] inventory = saveInventory(player);
+        plugin.inventories.put(inventoryName, inventory);
+        plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_SAVE, new String[]{inventoryName});
+        plugin.serialize();
+    }
+    
+    public boolean loadPrivateInventory(Player player, String name){
+    	String worldCheckName = "p:" + name;
+        for (String inventory : plugin.inventories.keySet()){
+            String[] parts = inventory.split("\" \"");
+            if (parts[0].equals(player.getName())){
+            	if (parts[1].equals(worldCheckName)){
+            		loadInventory(plugin.inventories.get(inventory), player);
+                    plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
+                    return true;
+            	}
+            }
+            
+        }
+        return false;
     }
 }

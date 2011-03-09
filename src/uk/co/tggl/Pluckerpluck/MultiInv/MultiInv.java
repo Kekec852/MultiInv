@@ -33,6 +33,7 @@ public class MultiInv extends JavaPlugin{
      final MultiInvPlayerListener playerListener = new MultiInvPlayerListener(this);
      final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
+     final MultiInvPrivateInventories privateInventories = new MultiInvPrivateInventories(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
      public ConcurrentHashMap<String, MultiInvPlayerItem[][]> inventories = new ConcurrentHashMap<String, MultiInvPlayerItem[][]>();
