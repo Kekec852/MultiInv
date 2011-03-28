@@ -13,7 +13,7 @@ public class MultiInvDebugger {
 public final MultiInv plugin;
 
 	private boolean debugging = false;
-	private ArrayList<Player> debuggers = new ArrayList<Player>();
+	private ArrayList<String> debuggers = new ArrayList<String>();
 	private String dividerStart = "#-----";
 	private String dividerEnd = "-----#";
 	private ArrayList<String> logHistory = new ArrayList<String>();
@@ -24,18 +24,15 @@ public final MultiInv plugin;
     }
     
     public void addDebugger (Player player){
-    	if (!(debuggers.contains(player))){
-    		debuggers.add(player);
+    	if (!(debuggers.contains(player.getName()))){
+    		debuggers.add(player.getName());
     		debugging=true;
     	}
     }
     
     public void removeDebugger (Player player){
-    	if (debuggers.contains(player)){
-    		debuggers.remove(player);
-    		if (debuggers.isEmpty()){
-    			stopDebugging();
-    		}
+    	if (debuggers.contains(player.getName())){
+    		debuggers.remove(player.getName());
     	}
     }
     
@@ -139,8 +136,11 @@ public final MultiInv plugin;
     
     private void sendDebuggersMessage(String message){
     	if (!(debuggers.isEmpty())){
-	    	for (Player player : debuggers){
-	    		player.sendMessage(message);
+	    	for (String player : debuggers){
+	    		Player player2 = plugin.getServer().getPlayer(player);
+	    		if (player2 != null){
+	    			player2.sendMessage(message);
+	    		}
 	    	}
     	}
     	if (debugLogging){

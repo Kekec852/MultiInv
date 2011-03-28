@@ -16,6 +16,10 @@ public class MultiInvReader {
     private ArrayList<String> createShares() {
         ArrayList<String> lines = new ArrayList<String>();
         File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "shares.txt");
+        File dir = new File(file.getParent());
+        if (!dir.exists()){
+            dir.mkdir();
+        }
         if(!file.exists()){
             try {
                 file.createNewFile();

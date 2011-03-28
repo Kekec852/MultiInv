@@ -17,9 +17,9 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.nijikokun.bukkit.Permissions.Permissions;
+//import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijiko.permissions.PermissionHandler;
-import org.bukkit.plugin.Plugin;
+//import org.bukkit.plugin.Plugin;
 
 
 import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
@@ -33,7 +33,6 @@ public class MultiInv extends JavaPlugin{
      final MultiInvPlayerListener playerListener = new MultiInvPlayerListener(this);
      final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
-     final MultiInvPrivateInventories privateInventories = new MultiInvPrivateInventories(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
      public ConcurrentHashMap<String, MultiInvPlayerItem[][]> inventories = new ConcurrentHashMap<String, MultiInvPlayerItem[][]>();
@@ -42,8 +41,11 @@ public class MultiInv extends JavaPlugin{
      public static PermissionHandler Permissions = null;
      public static final Logger log = Logger.getLogger("Minecraft");
      public static String pluginName;
-     public boolean permissionsEnabled = true;
+     public boolean permissionsEnabled = false;
     
+     public void onLoad(){
+    	 System.out.println("Loaded MI");
+     }
      
     @Override
     public void onDisable() {
@@ -73,33 +75,15 @@ public class MultiInv extends JavaPlugin{
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.WORLD_LOADED, worldListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_LOGIN , playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_TELEPORT , playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.WORLD_LOAD, worldListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
-        setupPermissions();
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
-             public void run() {
-                 for (String player : prevWorlds.keySet()){
-                     Player realPlayer = getServer().getPlayer(player);
-                     if (prevWorlds.get(player).equals(realPlayer.getWorld().getName())){    
-                     }else{
-                    	 String prevWorld = prevWorlds.get(player);
-                    	 String nowWorld = realPlayer.getWorld().getName();
-                    	 debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
-                    			 new String[]{player, prevWorld, nowWorld});
-                         playerInventory.storeWorldInventory(realPlayer, prevWorld);
-                         playerInventory.loadWorldInventory(realPlayer, nowWorld);
-                         prevWorlds.put(player, nowWorld);
-
-                     }
-                 }
-             }
-        }, 20L, 20L);
+        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Low, this);
+        //setupPermissions();
     }
 
-
+    /*
     public void setupPermissions() {
         Plugin perm = this.getServer().getPluginManager().getPlugin("Permissions");
         if(Permissions == null) {
@@ -110,8 +94,8 @@ public class MultiInv extends JavaPlugin{
                 permissionsEnabled = false;
             }
         }
-    }
-    
+    }*/
+
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         String[] trimmedArgs = args;
         String commandName = command.getName().toLowerCase();
@@ -120,7 +104,7 @@ public class MultiInv extends JavaPlugin{
         }
         return false;
     }
-    
+
      private boolean performCheck(CommandSender sender, String[] split) { 
     	 String Str = split[0];
          if (sender instanceof Player){

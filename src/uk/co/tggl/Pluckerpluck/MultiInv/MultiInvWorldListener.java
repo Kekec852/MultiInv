@@ -12,7 +12,7 @@ public class MultiInvWorldListener extends WorldListener{
         plugin = instance;
     }
     
-    public void onWorldLoaded(WorldEvent event){
+    public void onWorldLoad(WorldEvent event){
             MultiInv.log.info("["+ MultiInv.pluginName + "] Detected " + event.getWorld().getName() + ". Reloading shares.txt");
             Boolean shares = plugin.fileReader.parseShares();
             if (shares == false){
