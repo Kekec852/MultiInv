@@ -1,6 +1,6 @@
 name: MultiInv
 main: uk.co.tggl.Pluckerpluck.MultiInv.MultiInv
-version: 1.4.0
+version: 1.5.0
 website: http://www.tggl.co.uk
 author: Pluckerpluck
 description: >
@@ -11,3 +11,4 @@ commands:
     usage: |
            /<command> save- saves inventory
            /<command> load - loads inventory
+           /<command> debug - starts debugging
