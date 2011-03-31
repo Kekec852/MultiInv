@@ -22,7 +22,6 @@ public class MultiInvPlayerListener extends PlayerListener{
     	String playerName = player.getName();
     	String world = player.getWorld().getName();
     	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGIN, new String[]{playerName});
-        plugin.prevWorlds.put(playerName, world);
         plugin.playerInventory.loadWorldInventory(player, world);
     }
     public void onPlayerQuit(PlayerQuitEvent event){
@@ -31,8 +30,6 @@ public class MultiInvPlayerListener extends PlayerListener{
     	String world = player.getWorld().getName();
     	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGOUT, new String[]{playerName});
         plugin.playerInventory.storeWorldInventory(player, world);
-        plugin.prevWorlds.remove(playerName);
-        plugin.debugger.removeDebugger(player);
     }
     
     public void onPlayerTeleport(PlayerTeleportEvent event){

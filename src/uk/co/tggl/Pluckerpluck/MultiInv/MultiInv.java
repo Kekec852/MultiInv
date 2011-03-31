@@ -36,7 +36,6 @@ public class MultiInv extends JavaPlugin{
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
      public ConcurrentHashMap<String, MultiInvPlayerItem[][]> inventories = new ConcurrentHashMap<String, MultiInvPlayerItem[][]>();
-     public ConcurrentHashMap<String, String> prevWorlds = new ConcurrentHashMap<String, String>();
      public ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
      public static PermissionHandler Permissions = null;
      public static final Logger log = Logger.getLogger("Minecraft");
@@ -44,7 +43,7 @@ public class MultiInv extends JavaPlugin{
      public boolean permissionsEnabled = false;
     
      public void onLoad(){
-    	 System.out.println("Loaded MI");
+    	
      }
      
     @Override
@@ -68,7 +67,6 @@ public class MultiInv extends JavaPlugin{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
         }
         deSerialize();
-        updateWorlds();
         if (shares){
         	cleanWorldInventories();
         }
@@ -247,14 +245,6 @@ public class MultiInv extends JavaPlugin{
               ex.printStackTrace();
             }
             debugger.debugEvent(MultiInvEvent.FILE_LOAD, new String[]{});
-     }
-     
-     public void updateWorlds(){
-         Player[] players = this.getServer().getOnlinePlayers();
-         for (Player player : players){
-             prevWorlds.put(player.getName(), player.getWorld().getName());
-         }
-         debugger.debugEvent(MultiInvEvent.PLAYERS_UPDATE, new String[]{});
      }
      
      public int deletePlayerInventories(String name){
