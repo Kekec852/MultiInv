@@ -14,13 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-//import com.nijikokun.bukkit.Permissions.Permissions;
+import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijiko.permissions.PermissionHandler;
-//import org.bukkit.plugin.Plugin;
-
 
 import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
 /**
@@ -78,10 +77,10 @@ public class MultiInv extends JavaPlugin{
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Low, this);
-        //setupPermissions();
+        setupPermissions();
     }
 
-    /*
+    
     public void setupPermissions() {
         Plugin perm = this.getServer().getPluginManager().getPlugin("Permissions");
         if(Permissions == null) {
@@ -92,7 +91,7 @@ public class MultiInv extends JavaPlugin{
                 permissionsEnabled = false;
             }
         }
-    }*/
+    }
 
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         String[] trimmedArgs = args;
