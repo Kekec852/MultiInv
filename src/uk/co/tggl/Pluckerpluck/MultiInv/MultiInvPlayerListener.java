@@ -41,6 +41,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     	String sharedWorld = plugin.sharesMap.get(worldTo);
     	if (sharedWorld != null){
     		worldTo = sharedWorld;
+    		plugin.serialize();
     	}
     	if (!(worldTo.equals(worldFrom))){
 		   	 plugin.playerInventory.storeWorldInventory(player, worldFrom);
