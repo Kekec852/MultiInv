@@ -71,12 +71,11 @@ public class MultiInv extends JavaPlugin{
         }
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.WORLD_LOAD, worldListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Low, this);
+        pm.registerEvent(Event.Type.WORLD_LOAD, worldListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Monitor, this);
         setupPermissions();
     }
 
