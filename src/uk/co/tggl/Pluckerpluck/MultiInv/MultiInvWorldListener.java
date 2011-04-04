@@ -1,7 +1,7 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
-import org.bukkit.event.world.WorldEvent;
 import org.bukkit.event.world.WorldListener;
+import org.bukkit.event.world.WorldLoadEvent;
 
 
 public class MultiInvWorldListener extends WorldListener{
@@ -12,7 +12,7 @@ public class MultiInvWorldListener extends WorldListener{
         plugin = instance;
     }
     
-    public void onWorldLoad(WorldEvent event){
+    public void onWorldLoad(WorldLoadEvent event){
             MultiInv.log.info("["+ MultiInv.pluginName + "] Detected " + event.getWorld().getName() + ". Reloading shares.txt");
             Boolean shares = plugin.fileReader.parseShares();
             if (shares == false){
