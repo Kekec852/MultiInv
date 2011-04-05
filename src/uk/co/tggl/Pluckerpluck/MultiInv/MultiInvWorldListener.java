@@ -19,6 +19,7 @@ public class MultiInvWorldListener extends WorldListener{
         for (Player player : plugin.getServer().getOnlinePlayers()){
             plugin.playerInventory.storeWorldInventory(player, player.getWorld().getName());
         }
+        plugin.serialize();
     }
 
     @Override
