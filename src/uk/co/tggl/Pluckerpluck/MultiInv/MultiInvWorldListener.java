@@ -1,7 +1,9 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.world.WorldListener;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 
 
 public class MultiInvWorldListener extends WorldListener{
@@ -11,7 +13,15 @@ public class MultiInvWorldListener extends WorldListener{
     public MultiInvWorldListener(MultiInv instance) {
         plugin = instance;
     }
-    
+
+    @Override
+    public void onWorldSave(WorldSaveEvent event) {
+        for (Player player : plugin.getServer().getOnlinePlayers()){
+            plugin.playerInventory.storeWorldInventory(player, player.getWorld().getName());
+        }
+    }
+
+    @Override
     public void onWorldLoad(WorldLoadEvent event){
             MultiInv.log.info("["+ MultiInv.pluginName + "] Detected " + event.getWorld().getName() + ". Reloading shares.txt");
             Boolean shares = plugin.fileReader.parseShares();

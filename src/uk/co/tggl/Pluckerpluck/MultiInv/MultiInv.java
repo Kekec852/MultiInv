@@ -71,6 +71,7 @@ public class MultiInv extends JavaPlugin{
         }
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
         PluginManager pm = getServer().getPluginManager();
+        pm.registerEvent(Event.Type.WORLD_SAVE, worldListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.WORLD_LOAD, worldListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
