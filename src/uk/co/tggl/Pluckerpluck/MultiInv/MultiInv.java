@@ -104,6 +104,10 @@ public class MultiInv extends JavaPlugin{
     }
 
      private boolean performCheck(CommandSender sender, String[] split) { 
+    	 if (split.length == 0) {
+             sender.sendMessage("Use '/MultiInv delete <playerName>' to remove inventories'");
+             return true;
+    	 }
     	 String Str = split[0];
          if (sender instanceof Player){
             if (permissionsEnabled == true && !Permissions.has((Player) sender, "MultiInv.delete" )){
@@ -112,60 +116,55 @@ public class MultiInv extends JavaPlugin{
              }else if(!sender.isOp()){
                  sender.sendMessage("You do not have permission to manipulate inventories");
                  return true;
-             }
-             if (split.length == 0) {
-                 sender.sendMessage("Use '/MultiInv delete <playerName>' to remove inventories'");
-                 return true;
-             } else{
-
-                 if(Str.equalsIgnoreCase("delete")){
-                     if(split.length==1){
-                         sender.sendMessage("Please name a player to delete");
-                         return true;
-                     }
-                     int invs = deletePlayerInventories(split[1]);
-                     if (invs != 0){
-                    	 if (invs == 1){
-                    		 sender.sendMessage("Deleted 1 invetory for player " + split[1]);
-                    	 }else{
-                    		 sender.sendMessage("Deleted " + invs + " invetories for player " + split[1]);
-                    	 }
-                         return true;
-                     }else{
-                         sender.sendMessage("Player " + split[1] + " does not exist");
-                         return true;
-                     }
-                 }else if (Str.equalsIgnoreCase("debug")){
-         	            if (permissionsEnabled == false || Permissions.has((Player) sender, "MultiInv.debug" )){
-         	            	if (split.length >= 2){
- 	        	            	if (split[1].equalsIgnoreCase("start")){
- 	        	            		if (split.length >= 3 && split[2].equalsIgnoreCase("show")){
- 		        	            		debugger.addDebugger((Player)sender);
- 		        	            		sender.sendMessage("Debugging started (shown)");
- 		        	            		return true;
- 		        	            	}else{
- 		        	            		debugger.startDebugging();
- 		        	            		sender.sendMessage("Debugging started (hidden)");
- 		        	            		return true;
- 		        	            	}
- 	        	            	}else if (split[1].equalsIgnoreCase("stop")){
- 	        	            		debugger.stopDebugging();
- 	        	            		sender.sendMessage("Debugging stopped");
- 	        	            		return true;
- 	        	            	}
- 	        	            	else if (split[1].equalsIgnoreCase("save")){
- 	        	            		debugger.saveDebugLog();
- 	        	            		sender.sendMessage("Debugging saved");
- 	        	            		return true;
- 	        	            	}
- 	        	                 
- 	        	             }
-         	            	sender.sendMessage("Please use a correct command");
-         	            	return true;
-         		 		}
-         	            sender.sendMessage("You do not have permissions to do this");
+             }            	 
+             if(Str.equalsIgnoreCase("delete")){
+                 if(split.length==1){
+                     sender.sendMessage("Please name a player to delete");
+                     return true;
+                 }
+                 int invs = deletePlayerInventories(split[1]);
+                 if (invs != 0){
+                	 if (invs == 1){
+                		 sender.sendMessage("Deleted 1 invetory for player " + split[1]);
+                	 }else{
+                		 sender.sendMessage("Deleted " + invs + " invetories for player " + split[1]);
+                	 }
+                     return true;
+                 }else{
+                     sender.sendMessage("Player " + split[1] + " does not exist");
+                     return true;
+                 }
+             }else if (Str.equalsIgnoreCase("debug")){
+     	            if (permissionsEnabled == false || Permissions.has((Player) sender, "MultiInv.debug" )){
+     	            	if (split.length >= 2){
+        	            	if (split[1].equalsIgnoreCase("start")){
+        	            		if (split.length >= 3 && split[2].equalsIgnoreCase("show")){
+	        	            		debugger.addDebugger((Player)sender);
+	        	            		sender.sendMessage("Debugging started (shown)");
+	        	            		return true;
+	        	            	}else{
+	        	            		debugger.startDebugging();
+	        	            		sender.sendMessage("Debugging started (hidden)");
+	        	            		return true;
+	        	            	}
+        	            	}else if (split[1].equalsIgnoreCase("stop")){
+        	            		debugger.stopDebugging();
+        	            		sender.sendMessage("Debugging stopped");
+        	            		return true;
+        	            	}
+        	            	else if (split[1].equalsIgnoreCase("save")){
+        	            		debugger.saveDebugLog();
+        	            		sender.sendMessage("Debugging saved");
+        	            		return true;
+        	            	}
+        	                 
+        	             }
+     	            	sender.sendMessage("Please use a correct command");
      	            	return true;
-                 }}}else{
+     		 		}
+     	            sender.sendMessage("You do not have permissions to do this");
+ 	            	return true;
+                 }}else{
         	 if(Str.equalsIgnoreCase("list")){
         		 log.info("["+ pluginName + "] Current inventories saved are:");
         		 for (String inventory : inventories.keySet()){
