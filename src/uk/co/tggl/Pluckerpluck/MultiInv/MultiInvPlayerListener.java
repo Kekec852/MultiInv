@@ -38,14 +38,15 @@ public class MultiInvPlayerListener extends PlayerListener{
     	String worldFrom = event.getFrom().getWorld().getName();
     	plugin.debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
 	   			 new String[]{player.getName(), worldFrom, worldTo});
-    	String sharedWorld = plugin.sharesMap.get(worldTo);
-    	if (sharedWorld != null){
-    		worldTo = sharedWorld;
-    		plugin.serialize();
+    	if (plugin.sharesMap.containsKey(worldTo)){
+    		worldTo = plugin.sharesMap.get(worldTo);
+    	}
+    	if (plugin.sharesMap.containsKey(worldFrom)){
+    		worldFrom = plugin.sharesMap.get(worldFrom);
     	}
     	if (!(worldTo.equals(worldFrom))){
-		   	 plugin.playerInventory.storeWorldInventory(player, worldFrom);
-		   	 plugin.playerInventory.loadWorldInventory(player, worldTo);
+    		plugin.playerInventory.storeWorldInventory(player, worldFrom);
+    		plugin.playerInventory.loadWorldInventory(player, worldTo);
     	}
     }
     

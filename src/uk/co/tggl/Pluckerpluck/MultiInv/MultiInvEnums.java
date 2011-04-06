@@ -15,7 +15,10 @@ public class MultiInvEnums {
 	    PLAYERS_UPDATE,
 	    PLUGIN_ENABLE,
 	    FILE_LOAD,
-	    FILE_SAVE
+	    FILE_SAVE, 
+	    INVENTORY_LOAD_NEW, 
+	    INVENTORY_LOAD_NULL, 
+	    INVENTORY_DELETE_UNUSED
 	}
 	
 }

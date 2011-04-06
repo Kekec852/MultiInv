@@ -125,6 +125,18 @@ public final MultiInv plugin;
     				message = dividerStart + args[0] + " logged out" + dividerEnd;
     				sendDebuggersMessage(message);
     				break;
+    			case INVENTORY_LOAD_NULL:
+    				message  = "Loaded empty inventory for '" + args[0] + "'";
+    				sendDebuggersMessage(message);
+    				break;
+    			case INVENTORY_LOAD_NEW:
+    				message  = "Loaded new inventory for '" + args[0] + "'";
+    				sendDebuggersMessage(message);
+    				break;
+    			case INVENTORY_DELETE_UNUSED:
+    				message  = "'" + args[0] + "' has been deleted as it is unused";
+    				sendDebuggersMessage(message);
+    				break;
     			default:
     				message2 = "Error with "+ event.toString() + " debug event";
     				sendDebuggersMessage(message);

@@ -69,6 +69,7 @@ public class MultiInvReader {
                                 MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
                                 return false;
                             }else{
+                            	worldList.add(worlds[i]);
                                 plugin.sharesMap.put(worlds[i], worlds[0]);
                             }
                         }

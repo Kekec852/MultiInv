@@ -121,6 +121,7 @@ public class MultiInvPlayerData {
         }
         if (!newMember){
         	loadNewInventory(player);
+        	plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD_NEW, new String[]{player.getName()});
         }
     }
     

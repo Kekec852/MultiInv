@@ -40,6 +40,7 @@ public class MultiInv extends JavaPlugin{
      public static final Logger log = Logger.getLogger("Minecraft");
      public static String pluginName;
      public boolean permissionsEnabled = false;
+     public boolean pluginEnabled = true;
     
      public void onLoad(){
     	
@@ -62,8 +63,11 @@ public class MultiInv extends JavaPlugin{
         Boolean shares = fileReader.parseShares();
         if (shares == false){
             MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
+            MultiInv.log.info("["+ MultiInv.pluginName + "] Plugin on standby until new world found.");
+            pluginEnabled = false;
         }else{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
+            pluginEnabled = true;
         }
         deSerialize();
         if (shares){
@@ -260,11 +264,11 @@ public class MultiInv extends JavaPlugin{
          return i;
      }
      public void deleteIfUnused(String inventory){
-    	 String[] parts = inventory.split("\" \".:");
-    	 if (parts[0].matches("^(w:)")){
+    	 String[] parts = inventory.split("\" \"");
+    	 if (parts[1].matches("^(w:)")){
 	    	 if (parts.length != 2 || this.sharesMap.containsKey(parts[1]) ){
 	    		inventories.remove(inventory);
-	 		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
+	 		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE_UNUSED, new String[]{inventory});
 	    	 }
     	 }
      }

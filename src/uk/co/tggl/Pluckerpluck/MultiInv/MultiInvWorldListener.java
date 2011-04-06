@@ -19,7 +19,6 @@ public class MultiInvWorldListener extends WorldListener{
         for (Player player : plugin.getServer().getOnlinePlayers()){
             plugin.playerInventory.storeWorldInventory(player, player.getWorld().getName());
         }
-        plugin.serialize();
     }
 
     @Override
@@ -27,10 +26,13 @@ public class MultiInvWorldListener extends WorldListener{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Detected " + event.getWorld().getName() + ". Reloading shares.txt");
             Boolean shares = plugin.fileReader.parseShares();
             if (shares == false){
-                MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
+                MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds.");
+                MultiInv.log.info("["+ MultiInv.pluginName + "] Plugin on standby until new world found.");
+                plugin.pluginEnabled = false;
                 return;
             }
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
+            plugin.pluginEnabled = true;
             plugin.cleanWorldInventories();
         
     }
