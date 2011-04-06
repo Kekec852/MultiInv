@@ -157,7 +157,6 @@ public class MultiInv extends JavaPlugin{
         	            		sender.sendMessage("Debugging saved");
         	            		return true;
         	            	}
-        	                 
         	             }
      	            	sender.sendMessage("Please use a correct command");
      	            	return true;

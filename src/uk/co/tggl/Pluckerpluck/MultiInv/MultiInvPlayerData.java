@@ -81,14 +81,14 @@ public class MultiInvPlayerData {
         player.getInventory().setLeggings(armourS[1]);
         player.getInventory().setBoots(armourS[0]);
     }
-    private void loadNewInventory(Player player){
+    private void loadNewInventory(Player player, String world){
         player.getInventory().clear();
         player.getInventory().setHelmet(null);
         player.getInventory().setChestplate(null);
         player.getInventory().setLeggings(null);
         player.getInventory().setBoots(null);
         plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_NEW, new String[]{player.getName()});
-        storeWorldInventory(player, player.getWorld().getName());
+        storeWorldInventory(player, world);
     }
     public void storeWorldInventory(Player player, String world){
     	if (plugin.sharesMap.containsKey(world)){
@@ -120,7 +120,7 @@ public class MultiInvPlayerData {
             
         }
         if (!newMember){
-        	loadNewInventory(player);
+        	loadNewInventory(player, world);
         	plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD_NEW, new String[]{player.getName()});
         }
     }
