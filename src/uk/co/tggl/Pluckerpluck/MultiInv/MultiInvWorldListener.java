@@ -28,11 +28,9 @@ public class MultiInvWorldListener extends WorldListener{
             if (shares == false){
                 MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds.");
                 MultiInv.log.info("["+ MultiInv.pluginName + "] Plugin on standby until new world found.");
-                plugin.pluginEnabled = false;
                 return;
             }
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
-            plugin.pluginEnabled = true;
             plugin.cleanWorldInventories();
         
     }

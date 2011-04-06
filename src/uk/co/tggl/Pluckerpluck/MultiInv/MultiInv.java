@@ -40,7 +40,6 @@ public class MultiInv extends JavaPlugin{
      public static final Logger log = Logger.getLogger("Minecraft");
      public static String pluginName;
      public boolean permissionsEnabled = false;
-     public boolean pluginEnabled = true;
     
      public void onLoad(){
     	
@@ -64,10 +63,8 @@ public class MultiInv extends JavaPlugin{
         if (shares == false){
             MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
             MultiInv.log.info("["+ MultiInv.pluginName + "] Plugin on standby until new world found.");
-            pluginEnabled = false;
         }else{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
-            pluginEnabled = true;
         }
         deSerialize();
         if (shares){

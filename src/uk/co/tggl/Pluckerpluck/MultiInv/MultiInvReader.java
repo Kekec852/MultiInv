@@ -53,10 +53,12 @@ public class MultiInvReader {
                 String[] worlds = content[0].split(", ");
                 if (plugin.getServer().getWorld(worlds[0]) == null){
                     MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[0]);
+                    plugin.sharesMap.clear();
                     return false;
                 }else{
                     if (worldList.contains(worlds[0])){
                         MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[0]);
+                        plugin.sharesMap.clear();
                         return false;
                     }
                     worldList.add(worlds[0]);
@@ -67,6 +69,7 @@ public class MultiInvReader {
                         }else{
                             if (worldList.contains(worlds[i])){
                                 MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
+                                plugin.sharesMap.clear();
                                 return false;
                             }else{
                             	worldList.add(worlds[i]);
