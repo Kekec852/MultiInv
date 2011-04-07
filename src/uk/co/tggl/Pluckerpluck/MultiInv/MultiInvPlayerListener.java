@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -53,4 +54,19 @@ public class MultiInvPlayerListener extends PlayerListener{
     	}
     }
     
+    public void onPlayerRespawn(PlayerRespawnEvent event){
+    	String worldTo = event.getRespawnLocation().getWorld().getName();
+    	String worldFrom = event.getPlayer().getWorld().getName();
+    	
+    	if (plugin.sharesMap.containsKey(worldTo)){
+    		worldTo = plugin.sharesMap.get(worldTo);
+    	}
+    	if (plugin.sharesMap.containsKey(worldFrom)){
+    		worldFrom = plugin.sharesMap.get(worldFrom);
+    	}
+    	if (!(worldTo.equals(worldFrom))){
+    		
+    	}
+
+    }    
 }
