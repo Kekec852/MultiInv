@@ -17,13 +17,18 @@ public class MultiInvPlayerData {
         MultiInvPlayerItem[] items = new MultiInvPlayerItem[stacks.length];
         int i = 0;
         for (ItemStack stack : stacks){
-                MultiInvPlayerItem item = new MultiInvPlayerItem();
-                item.setId(stack.getTypeId());
-                item.setQuanitity(stack.getAmount());
-                item.setDurability(stack.getDurability());
-                items[i] = item;
-                i++;
-            }
+        	if (stack == null || stack.getAmount() == 0){
+        		items[i] = null;
+        		i++;
+        		continue;
+        	}
+    		MultiInvPlayerItem item = new MultiInvPlayerItem();
+            item.setId(stack.getTypeId());
+            item.setQuanitity(stack.getAmount());
+            item.setDurability(stack.getDurability());
+            items[i] = item;
+            i++;
+       }
         return items;
     }
     
@@ -31,12 +36,17 @@ public class MultiInvPlayerData {
         ItemStack[] items = new ItemStack[itemArray.length];
         int i = 0;
         for (MultiInvPlayerItem item : itemArray){
-                int id = item.getId();
-                int amount = item.getQuanitity();
-                short damage = item.getDurability();
-                ItemStack stack = new ItemStack(id, amount, damage);
-                items[i] = stack;
-                i++;
+        	if (item == null || item.getQuanitity() == 0){
+        		items[i] = null;
+        		i++;
+        		continue;
+        	}
+            int id = item.getId();
+            int amount = item.getQuanitity();
+            short damage = item.getDurability();
+            ItemStack stack = new ItemStack(id, amount, damage);
+            items[i] = stack;
+            i++;
         }
         return items;
     }
@@ -71,11 +81,6 @@ public class MultiInvPlayerData {
         ItemStack[] inventoryS = objectToInventorySlots(inventory[0]);
         ItemStack[] armourS = objectToArmourSlots(inventory[1]);
         player.getInventory().setContents(inventoryS);
-        for (int i= 0; i<armourS.length; i++){
-            if (armourS[i].getAmount()==0){
-                armourS[i] = null;
-            }
-        }
         player.getInventory().setHelmet(armourS[3]);
         player.getInventory().setChestplate(armourS[2]);
         player.getInventory().setLeggings(armourS[1]);
