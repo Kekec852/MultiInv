@@ -34,20 +34,22 @@ public class MultiInvPlayerListener extends PlayerListener{
     }
     
     public void onPlayerTeleport(PlayerTeleportEvent event){
-    	String worldTo = event.getTo().getWorld().getName();
-    	Player player = event.getPlayer();
-    	String worldFrom = event.getFrom().getWorld().getName();
-    	plugin.debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
-	   			 new String[]{player.getName(), worldFrom, worldTo});
-    	if (plugin.sharesMap.containsKey(worldTo)){
-    		worldTo = plugin.sharesMap.get(worldTo);
-    	}
-    	if (plugin.sharesMap.containsKey(worldFrom)){
-    		worldFrom = plugin.sharesMap.get(worldFrom);
-    	}
-    	if (!(worldTo.equals(worldFrom))){
-    		plugin.playerInventory.storeWorldInventory(player, worldFrom);
-    		plugin.playerInventory.loadWorldInventory(player, worldTo);
+    	if(!(event.isCancelled())){
+	    	String worldTo = event.getTo().getWorld().getName();
+	    	Player player = event.getPlayer();
+	    	String worldFrom = event.getFrom().getWorld().getName();
+	    	plugin.debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
+		   			 new String[]{player.getName(), worldFrom, worldTo});
+	    	if (plugin.sharesMap.containsKey(worldTo)){
+	    		worldTo = plugin.sharesMap.get(worldTo);
+	    	}
+	    	if (plugin.sharesMap.containsKey(worldFrom)){
+	    		worldFrom = plugin.sharesMap.get(worldFrom);
+	    	}
+	    	if (!(worldTo.equals(worldFrom))){
+	    		plugin.playerInventory.storeWorldInventory(player, worldFrom);
+	    		plugin.playerInventory.loadWorldInventory(player, worldTo);
+	    	}
     	}
     }
     
