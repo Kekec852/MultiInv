@@ -57,6 +57,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     public void onPlayerRespawn(PlayerRespawnEvent event){
     	String worldTo = event.getRespawnLocation().getWorld().getName();
     	String worldFrom = event.getPlayer().getWorld().getName();
+    	String player = event.getPlayer().getName();
     	
     	if (plugin.sharesMap.containsKey(worldTo)){
     		worldTo = plugin.sharesMap.get(worldTo);
@@ -65,7 +66,8 @@ public class MultiInvPlayerListener extends PlayerListener{
     		worldFrom = plugin.sharesMap.get(worldFrom);
     	}
     	if (!(worldTo.equals(worldFrom))){
-    		
+    		MultiInvRespawnRunnable respawnWait = new MultiInvRespawnRunnable(worldTo, worldFrom, player, plugin);
+    		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, respawnWait, 10);
     	}
 
     }    
