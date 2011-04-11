@@ -16,7 +16,14 @@ public class MultiInvInventory {
 	
 	MultiInvInventory(Inventory inventory){
 		if (inventory != null){
-			
+			setInventory(inventory);
+		}
+	}
+	
+	MultiInvInventory(Player player){
+		PlayerInventory inventory = player.getInventory();
+		if (inventory != null){
+			setInventory(inventory);
 		}
 	}
 	
@@ -38,7 +45,15 @@ public class MultiInvInventory {
 	 * @param Player of which to set the inventory
 	 **/
 	public void getInventory(Player player){
-		player.getInventory().setContents(getContents());
+		PlayerInventory inventory = player.getInventory();
+		inventory.setContents(getContents());
+		ItemStack[] armourS = getArmourContents();
+		if (armourS != null){
+			inventory.setHelmet(armourS[3]);
+			inventory.setChestplate(armourS[2]);
+			inventory.setLeggings(armourS[1]);
+			inventory.setBoots(armourS[0]);
+		}
 	}
 	
 	/*

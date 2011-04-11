@@ -34,7 +34,7 @@ public class MultiInv extends JavaPlugin{
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
-     public ConcurrentHashMap<String, MultiInvItem[][]> inventories = new ConcurrentHashMap<String, MultiInvItem[][]>();
+     public ConcurrentHashMap<String, MultiInvInventory> inventories = new ConcurrentHashMap<String, MultiInvInventory>();
      public ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
      public static PermissionHandler Permissions = null;
      public static final Logger log = Logger.getLogger("Minecraft");
@@ -232,7 +232,7 @@ public class MultiInv extends JavaPlugin{
             {
               fis = new FileInputStream(file);
               in = new ObjectInputStream(fis);
-              inventories = (ConcurrentHashMap<String, MultiInvItem[][]>) in.readObject();
+              inventories = (ConcurrentHashMap<String, MultiInvInventory>) in.readObject();
               in.close();
             }
             catch(IOException ex)
