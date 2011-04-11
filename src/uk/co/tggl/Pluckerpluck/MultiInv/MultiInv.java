@@ -34,12 +34,12 @@ public class MultiInv extends JavaPlugin{
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
-     public ConcurrentHashMap<String, MultiInvInventory> inventories = new ConcurrentHashMap<String, MultiInvInventory>();
-     public ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
-     public static PermissionHandler Permissions = null;
-     public static final Logger log = Logger.getLogger("Minecraft");
-     public static String pluginName;
-     public boolean permissionsEnabled = false;
+     ConcurrentHashMap<String, MultiInvInventory> inventories = new ConcurrentHashMap<String, MultiInvInventory>();
+     ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
+     static PermissionHandler Permissions = null;
+     static final Logger log = Logger.getLogger("Minecraft");
+     static String pluginName;
+     boolean permissionsEnabled = false;
     
      public void onLoad(){
     	
@@ -272,25 +272,10 @@ public class MultiInv extends JavaPlugin{
      
      public void cleanWorldInventories(){
     	 for (String inventory : inventories.keySet()){
-    		 deleteIfUnused(convertFormat(inventory));
+    		 deleteIfUnused(inventory);
     	 }
     	 serialize();
          return;
      }
      
-     private String convertFormat(String inventory){
-     	String inventory2 = inventory.replaceAll("\\sw:", "\" \"w:");
-     	if (!(inventory.equals(inventory2))){
-		 	String[] parts = inventory2.split("\" \"");
-		 	if (parts.length > 2){
-		 		inventory2 = parts[0] + "\" \"" + parts[1];
-		 	}
-		 	inventories.put(inventory2, inventories.get(inventory));
-		 	debugger.debugEvent(MultiInvEvent.INVENTORY_ADDED, new String[]{inventory2});
-		 	inventories.remove(inventory);
-		 	debugger.debugEvent(MultiInvEvent.INVENTORY_DELETE, new String[]{inventory});
-			log.info("["+ pluginName + "] Converted inventory " + inventory + " to " + inventory2);
-     	}
-     	return inventory2;
-     }
 }

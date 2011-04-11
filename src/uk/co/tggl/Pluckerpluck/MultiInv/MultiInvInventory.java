@@ -1,12 +1,18 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
+import java.io.Serializable;
 
+
+import org.bukkit.block.Block;
+import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class MultiInvInventory {
+public class MultiInvInventory implements Serializable{
 
+	
+    private static final long serialVersionUID = -9100540910611570679L;
 	/*
 	 * Inventory object
 	 * inventory[0] = main inventory's contents
@@ -40,9 +46,10 @@ public class MultiInvInventory {
 	}
 	
 	/**
-	 * Gets the MultiInvInventory and stores it in the player
+	 * Gets the MultiInvInventory and stores it in a player
 	 *
 	 * @param Player of which to set the inventory
+	 * @throws IllegalArgumentException if incorrect ItemStack length is stored
 	 **/
 	public void getInventory(Player player){
 		PlayerInventory inventory = player.getInventory();
@@ -56,20 +63,23 @@ public class MultiInvInventory {
 		}
 	}
 	
-	/*
-	 * Gets the MultiInvInventory and stores it in the block
+	/**
+	 * Gets the MultiInvInventory and stores it in a block
 	 *
 	 * @param inventory
 	 * @return true if the inventory was set
+	 * @throws IllegalArgumentException if incorrect ItemStack length is stored
 	 * 
-	public Boolean getInventory(Block block){
+	 **/
+	public boolean getInventory(Block block){
 		if(block instanceof ContainerBlock){
 			ContainerBlock container = (ContainerBlock)block;
-
+			container.getInventory().setContents(getContents());
+			return true;
 		}
 		return false;
 	}
-	*/
+	
 
 	private void setContents(ItemStack[] itemstacks){
 		storedInventory[0] = itemStackToObject(itemstacks);	
