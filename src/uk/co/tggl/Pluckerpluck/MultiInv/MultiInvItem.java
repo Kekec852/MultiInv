@@ -2,7 +2,7 @@ package uk.co.tggl.Pluckerpluck.MultiInv;
 import java.io.Serializable;
 
 
-public class MultiInvPlayerItem implements Serializable{
+public class MultiInvItem implements Serializable{
 
     /**
      * 

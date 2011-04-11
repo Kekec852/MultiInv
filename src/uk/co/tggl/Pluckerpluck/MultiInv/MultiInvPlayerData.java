@@ -1,91 +1,17 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
 
 public class MultiInvPlayerData {
 
-    public final MultiInv plugin;
+    public final MultiInv plugin; 
     
     public MultiInvPlayerData(MultiInv instance) {
         plugin = instance;
     }
     
-    private MultiInvPlayerItem[] itemStackToObject(ItemStack[] stacks){
-        MultiInvPlayerItem[] items = new MultiInvPlayerItem[stacks.length];
-        int i = 0;
-        for (ItemStack stack : stacks){
-        	if (stack == null || stack.getAmount() == 0){
-        		items[i] = null;
-        		i++;
-        		continue;
-        	}
-    		MultiInvPlayerItem item = new MultiInvPlayerItem();
-            item.setId(stack.getTypeId());
-            item.setQuanitity(stack.getAmount());
-            item.setDurability(stack.getDurability());
-            items[i] = item;
-            i++;
-       }
-        return items;
-    }
-    
-    private ItemStack[] objectToItemStack(MultiInvPlayerItem[] itemArray){
-        ItemStack[] items = new ItemStack[itemArray.length];
-        int i = 0;
-        for (MultiInvPlayerItem item : itemArray){
-        	if (item == null || item.getQuanitity() == 0){
-        		items[i] = null;
-        		i++;
-        		continue;
-        	}
-            int id = item.getId();
-            int amount = item.getQuanitity();
-            short damage = item.getDurability();
-            ItemStack stack = new ItemStack(id, amount, damage);
-            items[i] = stack;
-            i++;
-        }
-        return items;
-    }
-    
-    private MultiInvPlayerItem[] armourSlotsToObject(Player player){
-        return itemStackToObject(player.getInventory().getArmorContents());
-    }
-    
-    private MultiInvPlayerItem[] inventorySlotsToObject(Player player){
-        return itemStackToObject(player.getInventory().getContents());
-    }
-    
-    private ItemStack[] objectToInventorySlots(MultiInvPlayerItem[] itemArray){
-        return objectToItemStack(itemArray);
-    }
-    
-    private ItemStack[] objectToArmourSlots(MultiInvPlayerItem[] itemArray){
-        return objectToItemStack(itemArray);
-    }
-    
-    private MultiInvPlayerItem[][] saveInventory(Player player){
-        MultiInvPlayerItem[] armourO = armourSlotsToObject(player);
-        MultiInvPlayerItem[] inventoryO = inventorySlotsToObject(player);
-        MultiInvPlayerItem[][] inventory = new MultiInvPlayerItem[2][];
-        inventory[0] = new MultiInvPlayerItem[inventoryO.length];
-        inventory[1] = new MultiInvPlayerItem[armourO.length];
-        inventory[0] = inventoryO;
-        inventory[1] = armourO;
-        return inventory;
-    }
-    private void loadInventory(MultiInvPlayerItem[][] inventory, Player player){
-        ItemStack[] inventoryS = objectToInventorySlots(inventory[0]);
-        ItemStack[] armourS = objectToArmourSlots(inventory[1]);
-        player.getInventory().setContents(inventoryS);
-        player.getInventory().setHelmet(armourS[3]);
-        player.getInventory().setChestplate(armourS[2]);
-        player.getInventory().setLeggings(armourS[1]);
-        player.getInventory().setBoots(armourS[0]);
-    }
     private void loadNewInventory(Player player, String world){
         player.getInventory().clear();
         player.getInventory().setHelmet(null);
@@ -100,7 +26,7 @@ public class MultiInvPlayerData {
     		world = plugin.sharesMap.get(world);
     	}
         String inventoryName = player.getName() + "\" \"w:" + world;
-        MultiInvPlayerItem[][] inventory = saveInventory(player);
+        MultiInvItem[][] inventory = inventoryClass.saveInventory(player);
         plugin.inventories.put(inventoryName, inventory);
         plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_SAVE, new String[]{inventoryName});
         plugin.serialize();
@@ -117,7 +43,7 @@ public class MultiInvPlayerData {
             if (parts[0].equals(player.getName())){
             	newMember = false;
             	if (parts[1].equals(worldCheckName)){
-            		loadInventory(plugin.inventories.get(inventory), player);
+            		inventoryClass.loadInventory(plugin.inventories.get(inventory), player);
                     plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
                     return;
             	}
@@ -132,7 +58,7 @@ public class MultiInvPlayerData {
     
     public void storePrivateInventory(Player player, String name){
     	String inventoryName = player.getName() + "\" \"p:" + name;
-        MultiInvPlayerItem[][] inventory = saveInventory(player);
+        MultiInvItem[][] inventory = inventoryClass.saveInventory(player);
         plugin.inventories.put(inventoryName, inventory);
         plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_SAVE, new String[]{inventoryName});
         plugin.serialize();
@@ -144,7 +70,7 @@ public class MultiInvPlayerData {
             String[] parts = inventory.split("\" \"");
             if (parts[0].equals(player.getName())){
             	if (parts[1].equals(worldCheckName)){
-            		loadInventory(plugin.inventories.get(inventory), player);
+            		inventoryClass.loadInventory(plugin.inventories.get(inventory), player);
                     plugin.debugger.debugEvent(MultiInvEvent.INVENTORY_LOAD, new String[]{inventory});
                     return true;
             	}
