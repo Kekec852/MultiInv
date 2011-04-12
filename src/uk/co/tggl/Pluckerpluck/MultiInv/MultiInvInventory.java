@@ -19,18 +19,34 @@ public class MultiInvInventory implements Serializable{
 	 * inventory[1] = armour slots contents (null for non-player inventories)
 	 */
 	private MultiInvItem[][] storedInventory = new MultiInvItem[2][];
+	private String name = null;
 	
-	MultiInvInventory(Inventory inventory){
+	public MultiInvInventory(Inventory inventory){
 		if (inventory != null){
 			setInventory(inventory);
 		}
 	}
 	
-	MultiInvInventory(Player player){
+	public MultiInvInventory(Player player){
 		PlayerInventory inventory = player.getInventory();
 		if (inventory != null){
 			setInventory(inventory);
 		}
+	}
+	
+	public MultiInvInventory(Inventory inventory, String name){
+		if (inventory != null){
+			setInventory(inventory);
+		}
+		this.name = name;
+	}
+	
+	public MultiInvInventory(Player player, String name){
+		PlayerInventory inventory = player.getInventory();
+		if (inventory != null){
+			setInventory(inventory);
+		}
+		this.name = name;
 	}
 	
 	/**
@@ -48,7 +64,7 @@ public class MultiInvInventory implements Serializable{
 	/**
 	 * Gets the MultiInvInventory and stores it in a player
 	 *
-	 * @param Player of which to set the inventory
+	 * @param player in which to store the inventory
 	 * @throws IllegalArgumentException if incorrect ItemStack length is stored
 	 **/
 	public void getInventory(Player player){
@@ -66,7 +82,7 @@ public class MultiInvInventory implements Serializable{
 	/**
 	 * Gets the MultiInvInventory and stores it in a block
 	 *
-	 * @param inventory
+	 * @param block in which to store the inventory
 	 * @return true if the inventory was set
 	 * @throws IllegalArgumentException if incorrect ItemStack length is stored
 	 * 
@@ -80,6 +96,23 @@ public class MultiInvInventory implements Serializable{
 		return false;
 	}
 	
+	/**
+	 * Retrieves the name of the inventory
+	 *
+	 * @return name of the inventory
+	 **/
+	public String getName(){
+		return name;
+	}
+	
+	/**
+	 * Sets the name of the inventory
+	 *
+	 * @param name of the inventory
+	 **/
+	public void setName(String name){
+		this.name = name;
+	}
 
 	private void setContents(ItemStack[] itemstacks){
 		storedInventory[0] = itemStackToObject(itemstacks);	
