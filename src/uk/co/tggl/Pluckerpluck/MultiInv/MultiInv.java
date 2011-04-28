@@ -1,14 +1,7 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import java.io.ObjectInputStream;
-import java.io.FileInputStream;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,8 +13,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijiko.permissions.PermissionHandler;
-
-import uk.co.tggl.Pluckerpluck.MultiInv.MultiInvEnums.MultiInvEvent;
 /**
  * MultiInv for Bukkit
  *
@@ -34,12 +25,13 @@ public class MultiInv extends JavaPlugin{
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
-     ConcurrentHashMap<String, MultiInvInventory> inventories = new ConcurrentHashMap<String, MultiInvInventory>();
+     ConcurrentHashMap<String, MultiInvInventory> currentInventories = new ConcurrentHashMap<String, MultiInvInventory>();
      ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
      static PermissionHandler Permissions = null;
      static final Logger log = Logger.getLogger("Minecraft");
      static String pluginName;
      boolean permissionsEnabled = false;
+     public boolean segregateHealth = true;
     
      public void onLoad(){
     	
@@ -66,9 +58,8 @@ public class MultiInv extends JavaPlugin{
         }else{
             MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
         }
-        deSerialize();
         if (shares){
-        	cleanWorldInventories();
+        	//cleanWorldInventories();
         }
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
         PluginManager pm = getServer().getPluginManager();
@@ -123,7 +114,11 @@ public class MultiInv extends JavaPlugin{
                      sender.sendMessage("Please name a player to delete");
                      return true;
                  }
-                 int invs = deletePlayerInventories(split[1]);
+                 if (getServer().getPlayer(split[1]) != null){
+                	 sender.sendMessage("Matched " + getServer().getPlayer(split[1]).getName());
+                 }
+                // int invs = deletePlayerInventories(split[1]);
+                 int invs = 0;
                  if (invs != 0){
                 	 if (invs == 1){
                 		 sender.sendMessage("Deleted 1 invetory for player " + split[1]);
@@ -165,87 +160,25 @@ public class MultiInv extends JavaPlugin{
      	            sender.sendMessage("You do not have permissions to do this");
  	            	return true;
                  }}else{
-        	 if(Str.equalsIgnoreCase("list")){
-        		 log.info("["+ pluginName + "] Current inventories saved are:");
-        		 for (String inventory : inventories.keySet()){
-        			 log.info("["+ pluginName + "] " + inventory);
-        		 }
-        	 }else if (Str.equalsIgnoreCase("debug")){
-    			 if (split.length >= 2){
-        			if (split[1].equalsIgnoreCase("stop")){
- 	            		debugger.stopDebugging();
- 	            		sender.sendMessage("Debugging stopped");
- 	            	}else if (split[1].equalsIgnoreCase("start")){
- 	            		debugger.startDebugging();
- 	            		sender.sendMessage("Debugging started");
-	            	}else if (split[1].equalsIgnoreCase("save")){
-	            		debugger.saveDebugLog();
-	            		sender.sendMessage("Debugging saved");
-	            		return true;
-	            	}
-    			 }
-        	 }
+                	 if (Str.equalsIgnoreCase("debug")){
+		    			 if (split.length >= 2){
+		        			if (split[1].equalsIgnoreCase("stop")){
+		 	            		debugger.stopDebugging();
+		 	            		sender.sendMessage("Debugging stopped");
+		 	            	}else if (split[1].equalsIgnoreCase("start")){
+		 	            		debugger.startDebugging();
+		 	            		sender.sendMessage("Debugging started");
+			            	}else if (split[1].equalsIgnoreCase("save")){
+			            		debugger.saveDebugLog();
+			            		sender.sendMessage("Debugging saved");
+			            		return true;
+			            	}
+		    			 }
+		        	 }
                  }
             return true;
          }
-
-     public void serialize(){
-         File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "inventories.data");
-         String parent = file.getParent();
-            File dir = new File(parent);
-            if (!dir.exists()){
-                dir.mkdir();
-            }
-         FileOutputStream fos = null;
-         ObjectOutputStream out = null;
-          try
-          {
-              fos = new FileOutputStream(file);
-              out = new ObjectOutputStream(fos);
-              out.writeObject(inventories);
-            out.close();
-          }
-          catch(IOException ex)
-          {
-              ex.printStackTrace();
-          }
-          debugger.debugEvent(MultiInvEvent.FILE_SAVE, new String[]{});
-     }
-     
-     
-     @SuppressWarnings("unchecked")
-    public void deSerialize(){
-            FileInputStream fis = null;
-            ObjectInputStream in = null;
-            File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "inventories.data");
-            String parent = file.getParent();
-            File dir = new File(parent);
-            if (!dir.exists()){
-                serialize();
-                return;
-            }
-            if(!file.exists()){
-                serialize();
-                return;
-            }
-            try
-            {
-              fis = new FileInputStream(file);
-              in = new ObjectInputStream(fis);
-              inventories = (ConcurrentHashMap<String, MultiInvInventory>) in.readObject();
-              in.close();
-            }
-            catch(IOException ex)
-            {
-              ex.printStackTrace();
-            }
-            catch(ClassNotFoundException ex)
-            {
-              ex.printStackTrace();
-            }
-            debugger.debugEvent(MultiInvEvent.FILE_LOAD, new String[]{});
-     }
-     
+     /*
      public int deletePlayerInventories(String name){
     	 int i = 0;
          for (String inventory : inventories.keySet()){
@@ -277,5 +210,5 @@ public class MultiInv extends JavaPlugin{
     	 serialize();
          return;
      }
-     
+     */
 }

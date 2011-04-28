@@ -20,33 +20,42 @@ public class MultiInvInventory implements Serializable{
 	 */
 	private MultiInvItem[][] storedInventory = new MultiInvItem[2][];
 	private String name = null;
+	private String regionName = null;
+	private String worldName = null;
+	private String pluginName = null;
 	
-	public MultiInvInventory(Inventory inventory){
+	public MultiInvInventory(){}
+	
+	public MultiInvInventory(Inventory inventory, String pluginName){
 		if (inventory != null){
 			setInventory(inventory);
 		}
+		this.pluginName = pluginName;
 	}
 	
-	public MultiInvInventory(Player player){
+	public MultiInvInventory(Player player, String pluginName){
 		PlayerInventory inventory = player.getInventory();
 		if (inventory != null){
 			setInventory(inventory);
 		}
+		this.pluginName = pluginName;
 	}
 	
-	public MultiInvInventory(Inventory inventory, String name){
+	public MultiInvInventory(Inventory inventory, String name, String pluginName){
 		if (inventory != null){
 			setInventory(inventory);
 		}
 		this.name = name;
+		this.pluginName = pluginName;
 	}
 	
-	public MultiInvInventory(Player player, String name){
+	public MultiInvInventory(Player player, String name, String pluginName){
 		PlayerInventory inventory = player.getInventory();
 		if (inventory != null){
 			setInventory(inventory);
 		}
 		this.name = name;
+		this.pluginName = pluginName;
 	}
 	
 	/**
@@ -69,7 +78,10 @@ public class MultiInvInventory implements Serializable{
 	 **/
 	public void getInventory(Player player){
 		PlayerInventory inventory = player.getInventory();
-		inventory.setContents(getContents());
+		
+		if (getContents() != null){
+			inventory.setContents(getContents());
+		}
 		ItemStack[] armourS = getArmourContents();
 		if (armourS != null){
 			inventory.setHelmet(armourS[3]);
@@ -113,7 +125,52 @@ public class MultiInvInventory implements Serializable{
 	public void setName(String name){
 		this.name = name;
 	}
+	
+	/**
+	 * Sets the region name of the inventory
+	 *
+	 * @param name of the region
+	 **/
+	public void setRegionName(String name){
+		this.regionName = name;
+	}
+	
+	/**
+	 * Retrieves the region name of the inventory
+	 *
+	 * @return name of the region
+	 **/
+	public String getRegionName(){
+		return regionName;
+	}
+	
+	/**
+	 * Sets the region name of the inventory
+	 *
+	 * @param name of the region
+	 **/
+	public void setWorldName(String name){
+		this.worldName = name;
+	}
+	
+	/**
+	 * Retrieves the region name of the inventory
+	 *
+	 * @return name of the region
+	 **/
+	public String getWorldName(){
+		return worldName;
+	}
 
+	/**
+	 * Retrieves the plugin that created the inventory
+	 *
+	 * @return name of the plugin
+	 **/
+	public String getPluginName(){
+		return pluginName;
+	}
+	
 	private void setContents(ItemStack[] itemstacks){
 		storedInventory[0] = itemStackToObject(itemstacks);	
 	}
@@ -126,7 +183,7 @@ public class MultiInvInventory implements Serializable{
 	}
 	
 	private void setArmourContents(ItemStack[] itemstacks){
-		storedInventory[0] = itemStackToObject(itemstacks);	
+		storedInventory[1] = itemStackToObject(itemstacks);	
 	}
 	
 	private ItemStack[] getArmourContents(){
@@ -174,4 +231,123 @@ public class MultiInvInventory implements Serializable{
         return items;
     }
 
+	public String toString(){
+		String string = "";
+		if (storedInventory[0] != null){
+			for (MultiInvItem object : storedInventory[0]){
+				if (object == null){
+					string = string + "!";
+				}else{
+					string = string + object.toString();
+				}
+				string = string + ";";
+			}
+		}else{
+			string = string + "!!!";
+		}
+		string = string + "-;";
+		if (storedInventory[1] != null){
+			for (MultiInvItem object : storedInventory[1]){
+				if (object == null){
+					string = string + "!";
+				}else{
+					string = string + object.toString();
+				}
+				string = string + ";";
+			}
+		}else{
+			string = string + "!!!";
+		}
+		string = string + "-;";
+		
+		if (name == null){
+			string = string + "!";
+		}else{
+			string = string + name;
+		}
+		
+		if (regionName == null){
+			string = string + ";!";
+		}else{
+			string = string + ";" + regionName;
+		}
+		
+		if (worldName == null){
+			string = string + ";!";
+		}else{
+			string = string + ";" + worldName;
+		}
+		
+		if (pluginName == null){
+			string = string + ";!";
+		}else{
+			string = string + ";" + pluginName;
+		}
+		return string;
+	}
+	
+	public void fromString(String string){
+		String[] data = string.split(";-;");
+		if (data.length == 3){
+			if (!data[0].equals("!!!")){
+				String[] items1 = data[0].split(";");
+				MultiInvItem[] itemArray0 = new MultiInvItem[items1.length];
+				int i = 0;
+				for (String itemString : items1){
+					MultiInvItem item = new MultiInvItem();
+					if (itemString.equals("!")){
+						item = null;
+					}else{
+						item.fromString(itemString);
+					}
+					itemArray0[i] = item;
+					i++;
+				}
+				storedInventory[0] = itemArray0;
+			}
+			
+			if (!data[1].equals("!!!")){
+				String[] items2 = data[1].split(";");
+				MultiInvItem[] itemArray1 = new MultiInvItem[items2.length];
+				int j = 0;
+				for (String itemString : items2){
+					MultiInvItem item = new MultiInvItem();
+					if (itemString.equals("!")){
+						item = null;
+					}else{
+						item.fromString(itemString);
+					}
+					itemArray1[j] = item;
+					j++;
+				}
+				storedInventory[1] = itemArray1;
+			}
+			String[] items3 = data[2].split(";");
+			if (items3.length == 4){
+				if (items3[0].equals("!")){
+					name = null;
+				}else{
+					name = items3[0];
+				}
+				
+				if (items3[1].equals("!")){
+					regionName = null;
+				}else{
+					regionName = items3[0];
+				}
+				
+				if (items3[2].equals("!")){
+					worldName = null;
+				}else{
+					worldName = items3[0];
+				}
+				
+				if (items3[3].equals("!")){
+					pluginName = null;
+				}else{
+					pluginName = items3[0];
+				}
+			}
+		}
+	}
 }

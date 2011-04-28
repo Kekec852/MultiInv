@@ -29,4 +29,17 @@ public class MultiInvItem implements Serializable{
     
     public short getDurability(){return durability;}
 
+    public String toString(){
+		return itemID + "," + quanitity + "," + data + "," + durability;
+    }
+    
+    public void fromString(String string){
+    	String[] data = string.split(",");
+    	if (data.length == 4){
+    		setId(Integer.parseInt(data[0]));
+    		setQuanitity(Integer.parseInt(data[1]));
+    		setData(Byte.parseByte(data[2]));
+    		setDurability(Short.parseShort(data[3]));
+    	}
+    }
 }

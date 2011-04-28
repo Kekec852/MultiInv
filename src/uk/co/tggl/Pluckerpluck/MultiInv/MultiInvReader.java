@@ -40,7 +40,7 @@ public class MultiInvReader {
           }
         }
         catch (IOException ex){
-          ex.printStackTrace();
+        	ex.printStackTrace();
         }
         return lines;
       }
@@ -98,7 +98,7 @@ public class MultiInvReader {
           }
         }
         catch (IOException ex){
-          ex.printStackTrace();
+        	ex.printStackTrace();
         }
         return lines;
       }
