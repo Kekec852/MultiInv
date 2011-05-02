@@ -18,8 +18,10 @@ public class MultiInvRespawnRunnable implements Runnable{
 	@Override
     public void run() {
 		Player playerObj = plugin.getServer().getPlayer(this.player);
-		plugin.playerInventory.storeWorldInventory(playerObj, worldFrom);
-		plugin.playerInventory.loadWorldInventory(playerObj, worldTo);
+		plugin.playerInventory.storeCurrentInventory(playerObj);
+		if (!plugin.ignoreList.contains(player)){
+			plugin.playerInventory.loadWorldInventory(playerObj, worldTo);
+		}
     }
 
 }

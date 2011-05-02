@@ -24,14 +24,12 @@ public class MultiInvPlayerListener extends PlayerListener{
     	String world = player.getWorld().getName();
     	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGIN, new String[]{playerName});
         plugin.playerInventory.loadWorldInventory(player, world);
-        plugin.playerInventory.storeWorldInventory(player, world);
     }
     public void onPlayerQuit(PlayerQuitEvent event){
     	Player player = event.getPlayer();
     	String playerName = player.getName();
-    	String world = player.getWorld().getName();
     	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGOUT, new String[]{playerName});
-        plugin.playerInventory.storeWorldInventory(player, world);
+        plugin.playerInventory.storeCurrentInventory(player);
     }
     
     public void onPlayerTeleport(PlayerTeleportEvent event){
@@ -49,8 +47,10 @@ public class MultiInvPlayerListener extends PlayerListener{
 	    		worldFrom = plugin.sharesMap.get(worldFrom);
 	    	}
 	    	if (!(worldTo.equals(worldFrom))){
-	    		plugin.playerInventory.storeWorldInventory(player, worldFrom);
-	    		plugin.playerInventory.loadWorldInventory(player, worldTo);
+	    		plugin.playerInventory.storeCurrentInventory(player);
+	    		if (!plugin.ignoreList.contains(player.getName())){
+	    			plugin.playerInventory.loadWorldInventory(player, worldTo);
+	    		}
 	    	}
     	}
     }
