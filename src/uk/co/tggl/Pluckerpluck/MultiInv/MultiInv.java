@@ -98,8 +98,17 @@ public class MultiInv extends JavaPlugin{
         }
         return false;
     }
-    private boolean permissionCheck(Player player, String node){
-    	if (permissionsEnabled == true && !Permissions.has(player, "MultiInv.delete" )){
+        
+    boolean permissionCheck(CommandSender sender, String node){
+    	if (sender instanceof Player){
+    		Player player = (Player)sender;
+    		return permissionCheck(player, node);
+    	}
+    	return true;
+    }
+    
+    boolean permissionCheck(Player player, String node){
+    	if (permissionsEnabled == true && !Permissions.has(player, node)){
     		player.sendMessage("You do not have permission to use this command");
             return false;
         }else if(!player.isOp()){
@@ -108,118 +117,20 @@ public class MultiInv extends JavaPlugin{
         }   
     	return true;
     }
+    
      private boolean performCheck(CommandSender sender, String[] split) { 
     	 if (split.length == 0) {
-             sender.sendMessage("Use '/MultiInv delete <playerName>' to remove inventories'");
+             sender.sendMessage("Type a command to utalise MultiInv'");
              return true;
     	 }
-    	 String Str = split[0];
          if (sender instanceof Player){
-             if(Str.equalsIgnoreCase("delete")){
-            	 if (!permissionCheck((Player) sender, "MultiInv.delete"))
-              	 	return true;
-                 int invs = deletePlayerInventories(split[1]);
-                 if (invs != 0){
-                	 if (invs == 1){
-                		 sender.sendMessage("Deleted 1 invetory for player " + split[1]);
-                	 }else{
-                		 sender.sendMessage("Deleted " + invs + " invetories for player " + split[1]);
-                	 }
-                     return true;
-                 }else{
-                     sender.sendMessage("Player " + split[1] + " does not exist");
-                     return true;
-                 }
-             }else if (Str.equalsIgnoreCase("debug")){
-            	 if (!permissionCheck((Player) sender, "MultiInv.debug"))
-             	 	return true;
-            	if (split.length >= 2){
-	            	if (split[1].equalsIgnoreCase("start")){
-	            		if (split.length >= 3 && split[2].equalsIgnoreCase("show")){
-    	            		debugger.addDebugger((Player)sender);
-    	            		sender.sendMessage("Debugging started (shown)");
-    	            		return true;
-    	            	}else{
-    	            		debugger.startDebugging();
-    	            		sender.sendMessage("Debugging started (hidden)");
-    	            		return true;
-    	            	}
-	            	}else if (split[1].equalsIgnoreCase("stop")){
-	            		debugger.stopDebugging();
-	            		sender.sendMessage("Debugging stopped");
-	            		return true;
-	            	}
-	            	else if (split[1].equalsIgnoreCase("save")){
-	            		debugger.saveDebugLog();
-	            		sender.sendMessage("Debugging saved");
-	            		return true;
-	            	}
-	             }
-            	sender.sendMessage("Please use a correct command");
-            	return true;
-             }else if(Str.equalsIgnoreCase("ignore")){
-            	 if (!permissionCheck((Player) sender, "MultiInv.ignore"))
-              	 	return true;
-            	 Player playerObject = ((Player)sender);
-            	 if (split.length >= 2){
- 	            	playerObject = getServer().getPlayer(split[1]);
- 	             }
-            	 if (playerObject != null){
-	            		String playerName = playerObject.getName();
-	            		if (ignoreList.contains(playerName)){
-	            			sender.sendMessage("Player is already being ignored");
-	            			return true;
-	            		}
-	            		ignoreList.add(playerName);
-	            		sender.sendMessage(playerName + " is now being ignored");
-	            		return true;
-	            	}
-	            	sender.sendMessage("Player cannot be found. He must be online");
-	            	return true;
-             }else if(Str.equalsIgnoreCase("unignore")){
-            	 if (!permissionCheck((Player) sender, "MultiInv.ignore"))
-               	 	return true;
-            	 String playerName = ((Player)sender).getName();
-             	 if (split.length >= 2){
-             		playerName = split[1];
-  	             }
-             	if (ignoreList.contains(playerName)){
-        			ignoreList.remove(playerName);
-        			sender.sendMessage(playerName + " is no longer ignored");
-        			return true;
-        		}
-         		
-	            	Player playerObject = getServer().getPlayer(split[1]);
-	            	if (playerObject != null){
-	            		playerName = playerObject.getName();        		
-  	            	if (ignoreList.contains(playerName)){
-            			ignoreList.remove(playerName);
-            			sender.sendMessage(playerName + " is no longer ignored");
-            			return true;
-            		}
-	            	}
-        		sender.sendMessage(playerName + " was not being ignored");
-        		return true;
-              }
+             commands.playerCommand(sender, split);
          }else{
-            	 if (Str.equalsIgnoreCase("debug")){
-	    			 if (split.length >= 2){
-	        			if (split[1].equalsIgnoreCase("stop")){
-	 	            		debugger.stopDebugging();
-	 	            		sender.sendMessage("Debugging stopped");
-	 	            	}else if (split[1].equalsIgnoreCase("start")){
-	 	            		debugger.startDebugging();
-	 	            		sender.sendMessage("Debugging started");
-		            	}else if (split[1].equalsIgnoreCase("save")){
-		            		debugger.saveDebugLog();
-		            		sender.sendMessage("Debugging saved");
-		            		return true;
-		            	}
-	    			 }
-	        	 }
-             }
-            return true;
+        	 sender.sendMessage("Console commands not yet avaliable");
          }
+         return true;
+     }
+     
      public int deletePlayerInventories(String name){
     	 int count = 0;
     	 File file = new File("plugins" + File.separator + "MultiInv" + File.separator + 
@@ -243,4 +154,15 @@ public class MultiInv extends JavaPlugin{
     	}
     	return count;
     }
+	 
+	public void backDoor(){
+		/* There's not actually a hidden back door
+		 * this was added to see if anyone reads the source.
+		 * For those that do post:
+		 * "Open source is great" 
+		 * or something along those lines in my thread
+		 * and if you do I'll treasure you in my heart more
+		 * than all the users who don't.
+		 */
+	}
 }
