@@ -1,106 +1,73 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+import org.bukkit.World;
+import org.bukkit.util.config.Configuration;
 
 public class MultiInvReader {
     public final MultiInv plugin;
+    public JarFile jar;
 
-    public MultiInvReader(MultiInv instance) {
+    public MultiInvReader(MultiInv instance, File file) {
         plugin = instance;
+        try{
+        	jar = new JarFile(file);
+        }catch (Exception e) {
+			System.out.println("["+ MultiInv.pluginName + "] Failed miserably (Location 'MIR jarFile')");
+			System.out.println("["+ MultiInv.pluginName + "] Please contact Pluckerpluck with the error location");
+		}
     }
     
-    private ArrayList<String> createShares() {
-        ArrayList<String> lines = new ArrayList<String>();
-        File file = new File("plugins" + File.separator + "MultiInv" + File.separator + "shares.txt");
-        File dir = new File(file.getParent());
-        if (!dir.exists()){
-            dir.mkdir();
-        }
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-          BufferedReader input =  new BufferedReader(new FileReader(file));
-          try {
-            String line = null; //not declared within while loop
-            while (( line = input.readLine()) != null){
-              lines.add(line);
-            }
-          }
-          finally {
-            input.close();
-          }
-        }
-        catch (IOException ex){
-        	ex.printStackTrace();
-        }
-        return lines;
-      }
+    public File loadFileFromJar(String string) {
+		// load file, creating it first if it doesn't exist
+		File file = new File(plugin.getDataFolder(), string);
+		if (!file.canRead()) try {
+			file.getParentFile().mkdirs();
+			JarEntry entry = jar.getJarEntry(string);
+			InputStream is = jar.getInputStream(entry);
+			FileOutputStream os = new FileOutputStream(file);
+			byte[] buf = new byte[(int)entry.getSize()];
+			is.read(buf, 0, (int)entry.getSize());
+			os.write(buf);
+			os.close();
+		} catch (Exception e) {
+			System.out.println("["+ MultiInv.pluginName + "] Could not create/load configuration file");
+			return null;
+		}
+		return file;
+
+	}
+    
     public boolean parseShares() {
-        ArrayList<String> lines = createShares();
-        ArrayList<String> worldList = new ArrayList<String>();
-        for (String line : lines){
-            String[] content = line.split("#");
-            if (!(content[0].matches("(\\s)*"))){
-                String[] worlds = content[0].split(", ");
-                if (plugin.getServer().getWorld(worlds[0]) == null){
-                    MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains major non-existant world " + worlds[0]);
-                    plugin.sharesMap.clear();
-                    return false;
-                }else{
-                    if (worldList.contains(worlds[0])){
-                        MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[0]);
-                        plugin.sharesMap.clear();
-                        return false;
-                    }
-                    worldList.add(worlds[0]);
-                    int i = 1;
-                    while (i < worlds.length){
-                        if (plugin.getServer().getWorld(worlds[i]) == null){
-                            MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains minor non-existant world " + worlds[i]);
-                        }else{
-                            if (worldList.contains(worlds[i])){
-                                MultiInv.log.info("["+ MultiInv.pluginName + "] shares.txt contains multiple instances of " + worlds[i]);
-                                plugin.sharesMap.clear();
-                                return false;
-                            }else{
-                            	worldList.add(worlds[i]);
-                                plugin.sharesMap.put(worlds[i], worlds[0]);
-                            }
-                        }
-                        i++;
-                    }    
-                }
-            }
+    	File sharesFile = loadFileFromJar("shares.properties");
+    	if (sharesFile == null){
+    		return false;
+    	}
+        List<World> worldsO = plugin.getServer().getWorlds();
+        String[] serverWorlds = new String[worldsO.size()];
+        int i = 0;
+        for (World world : worldsO){
+        	serverWorlds[i] = world.getName();
+        	i++;
+        }
+        for (String key : MultiInvProperties.getAllKeys(sharesFile)){
+        	String value = MultiInvProperties.loadFromProperties(sharesFile, key);
+        	plugin.sharesMap.put(value, key);
         }
         return true;
     }
-    public ArrayList<String> readLines(File file) {
-        ArrayList<String> lines = new ArrayList<String>();
-        try {
-          BufferedReader input =  new BufferedReader(new FileReader(file));
-          try {
-            String line = null;
-            while (( line = input.readLine()) != null){
-              lines.add(line);
-            }
-          }
-          finally {
-            input.close();
-          }
-        }
-        catch (IOException ex){
-        	ex.printStackTrace();
-        }
-        return lines;
-      }
     
+    public void loadConfig(){
+    	loadFileFromJar("config.yml");
+    	plugin.getConfiguration().load();
+    	Configuration cfg = plugin.getConfiguration();
+    	plugin.segregateHealth = cfg.getBoolean("health", true);
+    	plugin.segregateInventories = cfg.getBoolean("inventories", true);
+    }
 }

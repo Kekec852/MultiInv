@@ -1,0 +1,6 @@
+# Do you want health to be shared across worlds
+health: true
+
+# Do you want inventories shared across worlds
+# *Currently does nothing, currently assuming that you got the plugin to share inventories*
+inventories: true

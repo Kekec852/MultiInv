@@ -5,30 +5,41 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Set;
 
 public class MultiInvProperties {
 	
-	 public static String loadFromProperties(String file, String key){
-		 return loadFromProperties(file, key, null);
-	 }
+	public static String loadFromProperties(String file, String key){	
+		File FileP = new File(file);
+		return loadFromProperties(FileP, key, null);
+	} 
 	
-	 public static String loadFromProperties(String file, String key, String defaultValue){
-    	File FileP = new File(file);
-    	Properties prop = new Properties();
-    	String value = defaultValue;
-    	File dir = new File(FileP.getParent());
+	public static String loadFromProperties(String file, String key, String defaultValue){
+		File FileP = new File(file);
+		return loadFromProperties(FileP, key, defaultValue);
+	}
+	
+	
+	public static String loadFromProperties(File file, String key){	
+		return loadFromProperties(file, key, null);
+	} 
+	
+	public static String loadFromProperties(File file, String key, String defaultValue){
+		Properties prop = new Properties();
+		String value = defaultValue;
+    	File dir = new File(file.getParent());
     	if (!dir.exists()){
             dir.mkdirs();
         }
-        if(!FileP.exists()){
+        if(!file.exists()){
             try {
-            	FileP.createNewFile();
+            	file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     	try {
-            FileInputStream in = new FileInputStream(FileP);
+            FileInputStream in = new FileInputStream(file);
             prop.load(in);
             if (prop.containsKey(key)) {
             	value = prop.getProperty(key);
@@ -39,6 +50,36 @@ public class MultiInvProperties {
         }
 		return value;
     }
+	 
+	 public static Set<String> getAllKeys(String file){
+		 File FileP = new File(file);
+		 return getAllKeys(FileP);
+	 }
+	 
+	 public static Set<String> getAllKeys(File file){
+		 Properties prop = new Properties();
+		 Set<String> set = null;
+		 File dir = new File(file.getParent());
+		 if (!dir.exists()){
+			 dir.mkdirs();
+		 }
+		 if(!file.exists()){
+			 try {
+				 file.createNewFile();
+			 } catch (IOException e) {
+				 e.printStackTrace();
+			 }
+		 }
+		 try {
+			 FileInputStream in = new FileInputStream(file);
+			 prop.load(in);
+			 set = prop.stringPropertyNames();
+			 in.close();
+		 } catch (Exception ex) {
+			 ex.printStackTrace();
+		 }
+		 return set;
+	 }
 	 
 	public static void saveToProperties(String file, String key, String value){
 		saveToProperties(file, key, value, "No Comment");

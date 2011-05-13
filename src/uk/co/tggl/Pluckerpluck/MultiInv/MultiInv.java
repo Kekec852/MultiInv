@@ -26,7 +26,7 @@ public class MultiInv extends JavaPlugin{
      final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
-     final MultiInvReader fileReader = new MultiInvReader(this);
+     final MultiInvReader fileReader = new MultiInvReader(this, this.getFile());
      final MultiInvCommands commands = new MultiInvCommands(this);
      ConcurrentHashMap<String, MultiInvInventory> currentInventories = new ConcurrentHashMap<String, MultiInvInventory>();
      ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
@@ -35,8 +35,9 @@ public class MultiInv extends JavaPlugin{
      static final Logger log = Logger.getLogger("Minecraft");
      static String pluginName;
      boolean permissionsEnabled = false;
-     public boolean segregateHealth = true;
-    
+     public boolean segregateHealth;
+     public boolean segregateInventories;
+     
      public void onLoad(){
     	
      }
@@ -55,6 +56,7 @@ public class MultiInv extends JavaPlugin{
     public void onEnable() {
         PluginDescriptionFile pdfFile = this.getDescription();
         pluginName = pdfFile.getName();
+        fileReader.loadConfig();
         Boolean shares = fileReader.parseShares();
         if (shares == false){
             MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
@@ -133,8 +135,7 @@ public class MultiInv extends JavaPlugin{
      
      public int deletePlayerInventories(String name){
     	 int count = 0;
-    	 File file = new File("plugins" + File.separator + "MultiInv" + File.separator + 
- 		"Worlds");
+    	 File file = new File(getDataFolder() + File.separator + "Worlds");
     	 count = searchFolders(file, name + ".data");
     	 return count;
      }
