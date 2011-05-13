@@ -27,7 +27,7 @@ public class MultiInv extends JavaPlugin{
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
      final MultiInvReader fileReader = new MultiInvReader(this);
-     final MultiInvProperties properties = new MultiInvProperties();
+     final MultiInvCommands commands = new MultiInvCommands(this);
      ConcurrentHashMap<String, MultiInvInventory> currentInventories = new ConcurrentHashMap<String, MultiInvInventory>();
      ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
      ArrayList<String> ignoreList = new ArrayList<String>();
@@ -117,11 +117,7 @@ public class MultiInv extends JavaPlugin{
          if (sender instanceof Player){
              if(Str.equalsIgnoreCase("delete")){
             	 if (!permissionCheck((Player) sender, "MultiInv.delete"))
-            	 	return true;
-                 if(split.length==1){
-                     sender.sendMessage("Please name a player to delete");
-                     return true;
-                 }
+              	 	return true;
                  int invs = deletePlayerInventories(split[1]);
                  if (invs != 0){
                 	 if (invs == 1){
@@ -164,45 +160,46 @@ public class MultiInv extends JavaPlugin{
              }else if(Str.equalsIgnoreCase("ignore")){
             	 if (!permissionCheck((Player) sender, "MultiInv.ignore"))
               	 	return true;
+            	 Player playerObject = ((Player)sender);
             	 if (split.length >= 2){
- 	            	Player playerObject = getServer().getPlayer(split[1]);
- 	            	if (playerObject != null){
- 	            		String playerName = playerObject.getName();
- 	            		if (ignoreList.contains(playerName)){
- 	            			sender.sendMessage("Player is already being ignored");
- 	            			return true;
- 	            		}
- 	            		ignoreList.add(playerName);
- 	            		sender.sendMessage(playerName + " is now being ignored");
- 	            		return true;
- 	            	}
- 	            	sender.sendMessage("Player cannot be found. He must be online");
- 	            	return true;
+ 	            	playerObject = getServer().getPlayer(split[1]);
  	             }
+            	 if (playerObject != null){
+	            		String playerName = playerObject.getName();
+	            		if (ignoreList.contains(playerName)){
+	            			sender.sendMessage("Player is already being ignored");
+	            			return true;
+	            		}
+	            		ignoreList.add(playerName);
+	            		sender.sendMessage(playerName + " is now being ignored");
+	            		return true;
+	            	}
+	            	sender.sendMessage("Player cannot be found. He must be online");
+	            	return true;
              }else if(Str.equalsIgnoreCase("unignore")){
             	 if (!permissionCheck((Player) sender, "MultiInv.ignore"))
                	 	return true;
+            	 String playerName = ((Player)sender).getName();
              	 if (split.length >= 2){
-             		String playerName = split[1];
-             		
-             		if (ignoreList.contains(playerName)){
+             		playerName = split[1];
+  	             }
+             	if (ignoreList.contains(playerName)){
+        			ignoreList.remove(playerName);
+        			sender.sendMessage(playerName + " is no longer ignored");
+        			return true;
+        		}
+         		
+	            	Player playerObject = getServer().getPlayer(split[1]);
+	            	if (playerObject != null){
+	            		playerName = playerObject.getName();        		
+  	            	if (ignoreList.contains(playerName)){
             			ignoreList.remove(playerName);
             			sender.sendMessage(playerName + " is no longer ignored");
             			return true;
             		}
-             		
-  	            	Player playerObject = getServer().getPlayer(split[1]);
-  	            	if (playerObject != null){
-  	            		playerName = playerObject.getName();        		
-	  	            	if (ignoreList.contains(playerName)){
-	            			ignoreList.remove(playerName);
-	            			sender.sendMessage(playerName + " is no longer ignored");
-	            			return true;
-	            		}
-  	            	}
-            		sender.sendMessage(playerName + " was not being ignored");
-            		return true;
-  	             }
+	            	}
+        		sender.sendMessage(playerName + " was not being ignored");
+        		return true;
               }
          }else{
             	 if (Str.equalsIgnoreCase("debug")){

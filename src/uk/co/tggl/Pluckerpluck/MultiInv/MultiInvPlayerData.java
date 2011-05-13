@@ -62,7 +62,7 @@ public class MultiInvPlayerData {
     	String file = "plugins" + File.separator + "MultiInv" + File.separator + 
 			"Other" + File.separator +  player.getName() + ".data";
     	plugin.currentInventories.put(player.getName(), inventory);
-    	plugin.properties.saveToProperties(file, inventory.getName(), inventory.toString(), "Stored Inventory");
+    	MultiInvProperties.saveToProperties(file, inventory.getName(), inventory.toString(), "Stored Inventory");
     }
     
     public void loadWorldInventory(Player player, String world){
@@ -82,7 +82,7 @@ public class MultiInvPlayerData {
     	String inventoryName = "w:" + world;
     	String file = "plugins" + File.separator + "MultiInv" + File.separator + 
 			"Worlds" + File.separator + world + File.separator +  player.getName() + ".data";
-        String tmpInventory = plugin.properties.loadFromProperties(file, inventoryName);
+        String tmpInventory = MultiInvProperties.loadFromProperties(file, inventoryName);
         if (tmpInventory != null){
 	        MultiInvInventory inventory = new MultiInvInventory();
 	    	inventory.fromString(tmpInventory); // converts properties string to MultiInvInventory
@@ -100,15 +100,15 @@ public class MultiInvPlayerData {
     	String file = "plugins" + File.separator + "MultiInv" + File.separator + 
 		"Worlds" + File.separator + world + File.separator +  player.getName() + ".data";
     	if (plugin.segregateHealth)
-    		plugin.properties.saveToProperties(file, "h:" + world,Integer.toString(player.getHealth()));
+    		MultiInvProperties.saveToProperties(file, "h:" + world,Integer.toString(player.getHealth()));
     	
-    	plugin.properties.saveToProperties(file, inventory.getName(), inventory.toString(), "Stored Inventory");
+    	MultiInvProperties.saveToProperties(file, inventory.getName(), inventory.toString(), "Stored Inventory");
     }
     
     public int loadHealthFromFile(String player, String world){
     	String file = "plugins" + File.separator + "MultiInv" + File.separator + 
     			"Worlds" + File.separator + world + File.separator +  player + ".data";
-    	String healthString = plugin.properties.loadFromProperties(file, "h:" + world, "20");
+    	String healthString = MultiInvProperties.loadFromProperties(file, "h:" + world, "20");
 		return Integer.parseInt(healthString);
     }
 }
