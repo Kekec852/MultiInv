@@ -126,7 +126,26 @@ public class MultiInv extends JavaPlugin{
              return true;
     	 }
          if (sender instanceof Player){
-             commands.playerCommand(sender, split);
+			/*
+			 * HashMap the maps command with the equivalent permission node
+			 */
+        	 ConcurrentHashMap<String, String> commandPermissions = new ConcurrentHashMap<String, String>();
+        	// Basic commands (User power - None atm)
+        	 
+        	 // Ignore commands (Mod power)
+        	 commandPermissions.put("ignore", "MultiInv.mod.ignore");
+        	 commandPermissions.put("unignore", "MultiInv.mod.ignore");
+        	 
+        	// Ignore commands (Admin power)
+        	 commandPermissions.put("delete", "MultiInv.admin.delete");
+        	 commandPermissions.put("unignore", "MultiInv.admin.debug");
+        	 commandPermissions.put("addshare", "MultiInv.admin.shares");
+        	 commandPermissions.put("removeshare", "MultiInv.admin.shares");
+        	 
+        	 if (commandPermissions.containsKey(split[1])){
+        		 String permission = commandPermissions.get(split[1].toLowerCase());
+        		 commands.playerCommand(sender, split, permission);
+        	 }
          }else{
         	 sender.sendMessage("Console commands not yet avaliable");
          }

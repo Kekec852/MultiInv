@@ -1,5 +1,7 @@
 package uk.co.tggl.Pluckerpluck.MultiInv;
 
+import java.io.File;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -10,11 +12,21 @@ public class MultiInvCommands {
         plugin = instance;
     }
     
-    int playerCommand(CommandSender sender, String[] split) { 
+    
+    /*
+     * Different return integers represent different errors
+     * 0 -> Success
+     * 1 -> Failed permissions
+     * 2 -> Lack of inputs
+     * 3 -> No command performed
+     */
+    int playerCommand(CommandSender sender, String[] split, String permission) { 
     	Player player = (Player)sender;
    	 	String Str = split[0];
-	 	if (!plugin.permissionCheck((Player) sender, "MultiInv." + Str))
-	 	 	return 1;
+	 	if (!plugin.permissionCheck((Player) sender, permission)){
+	 			sender.sendMessage("You do not have permissions to use " + Str);
+	 			return 1;
+   			}
         if(Str.equalsIgnoreCase("delete")){
         	if (split.length > 1){
         		deleteCommand(sender, split);
@@ -45,8 +57,24 @@ public class MultiInvCommands {
         	}
         	unignoreCommand(sender, ignored);
    	 		return 0;
+        }else if(Str.equalsIgnoreCase("addShare")){
+        	if (split.length >= 3){
+       	 		String minorWorld = split[1];
+       	 		String majorWorld = split[2];
+       	 		shareWorlds(minorWorld, majorWorld);
+       	 		return 0;
+        	}
+        	sender.sendMessage("/MultiInv addShare <minorWorld> <majorWorld>");
+   	 		return 2;
+        }else if(Str.equalsIgnoreCase("removeShare")){
+        	if (split.length >= 2){
+       	 		String minorWorld = split[1];
+       	 		removeShareWorld(minorWorld);
+        	}
+        	sender.sendMessage("/MultiInv removeShare <minorWorld>");
+   	 		return 2;
         }
-        return 0;
+        return 3;
     }
 
     
@@ -104,5 +132,15 @@ public class MultiInvCommands {
 		}
 		sender.sendMessage(playerName + " was not being ignored");
 		return;
+    }
+    
+    private void shareWorlds(String minorWorld, String majorWorld){
+    	String file = plugin.getDataFolder() + File.separator + "shares.properties";
+    	MultiInvProperties.saveToProperties(file, minorWorld, majorWorld);
+    }
+    
+    private void removeShareWorld(String minorWorld){
+    	String file = plugin.getDataFolder() + File.separator + "shares.properties";
+    	MultiInvProperties.removeProperty(file, minorWorld, null);
     }
 }

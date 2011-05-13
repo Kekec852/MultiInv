@@ -109,5 +109,30 @@ public class MultiInvProperties {
         	ex.printStackTrace();
         }
     }
+	
+	public static void removeProperty(String file, String key, String comment){
+    	File FileP = new File(file);
+    	Properties prop = new Properties();
+    	File dir = new File(FileP.getParent());
+    	if (!dir.exists()){
+            dir.mkdirs();
+        }
+        if(!FileP.exists()){
+            try {
+            	FileP.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    	try {
+            FileInputStream in = new FileInputStream(FileP);
+            prop.load(in);
+            prop.remove(key);
+            prop.store(new FileOutputStream(FileP), comment);
+            in.close();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
 }
 
