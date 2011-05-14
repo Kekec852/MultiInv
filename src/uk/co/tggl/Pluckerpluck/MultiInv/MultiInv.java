@@ -141,7 +141,7 @@ public class MultiInv extends JavaPlugin{
 			 * HashMap the maps command with the equivalent permission node
 			 */
         	 ConcurrentHashMap<String, String> commandPermissions = new ConcurrentHashMap<String, String>();
-        	// Basic commands (User power - None atm)
+        	 // Basic commands (User power - None atm)
         	 
         	 // Ignore commands (Mod power)
         	 commandPermissions.put("ignore", "MultiInv.mod.ignore");
