@@ -38,6 +38,9 @@ public class MultiInv extends JavaPlugin{
      public boolean segregateHealth;
      public boolean segregateInventories;
      
+     // 0 = unloaded, 1 = loaded successfully, 2 = loaded with errors
+     int shares = 0;
+     
      public void onLoad(){
     	
      }
@@ -57,25 +60,26 @@ public class MultiInv extends JavaPlugin{
         PluginDescriptionFile pdfFile = this.getDescription();
         pluginName = pdfFile.getName();
         fileReader.loadConfig();
-        Boolean shares = fileReader.parseShares();
-        if (shares == false){
-            MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds");
-            MultiInv.log.info("["+ MultiInv.pluginName + "] Plugin on standby until new world found.");
-        }else{
-            MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
-        }
-        if (shares){
-        	//cleanWorldInventories();
+        if (getServer().getOnlinePlayers().length > 0){
+        	Boolean shares = fileReader.parseShares();
+        	if (shares){
+        		MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded with no errors");
+        		this.shares = 1;
+        	}
+        	this.shares = 2;
         }
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
+        
+        // Event registration
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.WORLD_SAVE, worldListener, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.WORLD_LOAD, worldListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Monitor, this);
+        
+        //Permissions plugin setup
         setupPermissions();
     }
 

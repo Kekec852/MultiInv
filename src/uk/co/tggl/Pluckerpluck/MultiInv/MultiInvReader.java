@@ -37,7 +37,7 @@ public class MultiInvReader {
 			os.write(buf);
 			os.close();
 		} catch (Exception e) {
-			System.out.println("["+ MultiInv.pluginName + "] Could not create/load configuration file");
+			MultiInv.log.info("["+ MultiInv.pluginName + "] Could not create/load configuration file");
 			return null;
 		}
 		return file;
@@ -58,6 +58,9 @@ public class MultiInvReader {
         }
         for (String key : MultiInvProperties.getAllKeys(sharesFile)){
         	String value = MultiInvProperties.loadFromProperties(sharesFile, key);
+        	if (plugin.getServer().getWorld(key) == null || plugin.getServer().getWorld(value) == null){
+        		MultiInv.log.info("["+ MultiInv.pluginName + "] Sharing " + key + " to " + value + "is invalid");
+        	}
         	plugin.sharesMap.put(value, key);
         }
         return true;

@@ -137,10 +137,12 @@ public class MultiInvCommands {
     private void shareWorlds(String minorWorld, String majorWorld){
     	String file = plugin.getDataFolder() + File.separator + "shares.properties";
     	MultiInvProperties.saveToProperties(file, minorWorld, majorWorld);
+    	plugin.sharesMap.put(minorWorld, majorWorld);
     }
     
     private void removeShareWorld(String minorWorld){
     	String file = plugin.getDataFolder() + File.separator + "shares.properties";
     	MultiInvProperties.removeProperty(file, minorWorld, null);
+    	plugin.sharesMap.remove(minorWorld);
     }
 }

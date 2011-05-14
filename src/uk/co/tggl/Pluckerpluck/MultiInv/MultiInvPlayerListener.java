@@ -19,6 +19,14 @@ public class MultiInvPlayerListener extends PlayerListener{
     }
     
     public void onPlayerJoin(PlayerJoinEvent event){
+    	if (plugin.shares == 0){
+	    	Boolean shares = plugin.fileReader.parseShares();
+	    	if (shares){
+	    		MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded with no errors");
+	    		plugin.shares = 1;
+	    	}
+	    	plugin.shares = 2;
+    	}
     	Player player = event.getPlayer();
     	String playerName = player.getName();
     	String world = player.getWorld().getName();
@@ -68,7 +76,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     	}
     	if (!(worldTo.equals(worldFrom))){
     		MultiInvRespawnRunnable respawnWait = new MultiInvRespawnRunnable(worldTo, worldFrom, player, plugin);
-    		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, respawnWait, 10);
+    		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, respawnWait, 20);
     	}
 
     }    

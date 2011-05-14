@@ -19,21 +19,6 @@ public class MultiInvWorldListener extends WorldListener{
         for (Player player : plugin.getServer().getOnlinePlayers()){
             plugin.playerInventory.storeCurrentInventory(player);
         }
-    }
-
-    @Override
-    public void onWorldLoad(WorldLoadEvent event){
-            MultiInv.log.info("["+ MultiInv.pluginName + "] Detected " + event.getWorld().getName() + ". Reloading shares.txt");
-            Boolean shares = plugin.fileReader.parseShares();
-            if (shares == false){
-                MultiInv.log.info("["+ MultiInv.pluginName + "] Failed to load shared worlds.");
-                MultiInv.log.info("["+ MultiInv.pluginName + "] Plugin on standby until new world found.");
-                return;
-            }
-            MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded succesfully");
-            //plugin.cleanWorldInventories();
-        
-    }
-    
+    }   
     
 }
