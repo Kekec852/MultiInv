@@ -196,7 +196,7 @@ public class MultiInv extends JavaPlugin{
 	 }
 	 
 	 void loadPermissions(Player player){
-		 if(permissionCheck(player, "MultiInv.ignore", false)){
+		 if(permissionCheck(player, "MultiInv.state.ignore", false)){
 			 if (!ignoreList.contains(player.getName())){
 				 ignoreList.add(player.getName());
 			 }
