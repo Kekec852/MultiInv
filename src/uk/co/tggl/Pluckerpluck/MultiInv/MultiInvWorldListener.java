@@ -2,7 +2,6 @@ package uk.co.tggl.Pluckerpluck.MultiInv;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.world.WorldListener;
-import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 
 

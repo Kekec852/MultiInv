@@ -68,6 +68,7 @@ public class MultiInv extends JavaPlugin{
         	}
         	this.shares = 2;
         }
+        
         log.info( "["+ pluginName + "] version " + pdfFile.getVersion() + " is enabled!" );
         
         // Event registration
@@ -81,6 +82,7 @@ public class MultiInv extends JavaPlugin{
         
         //Permissions plugin setup
         setupPermissions();
+        loadPermissions();
     }
 
     
@@ -114,11 +116,16 @@ public class MultiInv extends JavaPlugin{
     }
     
     boolean permissionCheck(Player player, String node){
+    	return permissionCheck(player, node, true);
+    }
+    boolean permissionCheck(Player player, String node, Boolean loud){
     	if (permissionsEnabled == true && !Permissions.has(player, node)){
-    		player.sendMessage("You do not have permission to use this command");
+    		if (loud)
+    			player.sendMessage("You do not have permission to use this command");
             return false;
         }else if(!player.isOp()){
-        	player.sendMessage("You do not have permission to use this command");
+        	if (loud)
+        		player.sendMessage("You do not have permission to use this command");
             return false;
         }   
     	return true;
@@ -176,17 +183,34 @@ public class MultiInv extends JavaPlugin{
     			return count + 1;
     		}
     	}
-    	return count;
-    }
+		return count;
+	 }
 	 
-	public void backDoor(){
-		/* There's not actually a hidden back door
-		 * this was added to see if anyone reads the source.
-		 * For those that do post:
-		 * "Open source is great" 
-		 * or something along those lines in my thread
-		 * and if you do I'll treasure you in my heart more
-		 * than all the users who don't.
-		 */
-	}
+	 void loadPermissions(){
+		 Player[] online = getServer().getOnlinePlayers();
+		 if (online.length > 0){
+			for(Player player : online){
+				loadPermissions(player);
+			}
+		 }
+	 }
+	 
+	 void loadPermissions(Player player){
+		 if(permissionCheck(player, "MultiInv.ignore", false)){
+			 if (!ignoreList.contains(player.getName())){
+				 ignoreList.add(player.getName());
+			 }
+		 }
+	 }
+
+	 public void backDoor(){
+		 /* There's not actually a hidden back door
+		  * this was added to see if anyone reads the source.
+		  * For those that do post:
+		  * "Open source is great" 
+		  * or something along those lines in my thread
+		  * and if you do I'll treasure you in my heart more
+		  * than all the users who don't.
+		  */
+	 }
 }

@@ -30,6 +30,9 @@ public class MultiInvPlayerListener extends PlayerListener{
     	Player player = event.getPlayer();
     	String playerName = player.getName();
     	String world = player.getWorld().getName();
+    	
+    	plugin.loadPermissions(player);
+    	
     	plugin.debugger.debugEvent(MultiInvEvent.PLAYER_LOGIN, new String[]{playerName});
         plugin.playerInventory.loadWorldInventory(player, world);
     }
