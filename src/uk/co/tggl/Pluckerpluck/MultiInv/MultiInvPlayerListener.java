@@ -29,7 +29,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     	}
     	Player player = event.getPlayer();
     	String playerName = player.getName();
-    	String world = player.getWorld().getName();
+    	//String world = player.getWorld().getName();
     	
     	plugin.loadPermissions(player);
     	
@@ -47,7 +47,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     	if(!(event.isCancelled())){
 	    	String worldTo = event.getTo().getWorld().getName();
 	    	Player player = event.getPlayer();
-	    	player.setHealth(10);
+	    	player.setHealth(10);	    	
 	    	String worldFrom = event.getFrom().getWorld().getName();
 	    	plugin.debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
 		   			 new String[]{player.getName(), worldFrom, worldTo});

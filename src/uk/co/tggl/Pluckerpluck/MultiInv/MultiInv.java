@@ -3,6 +3,7 @@ package uk.co.tggl.Pluckerpluck.MultiInv;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,7 +53,7 @@ public class MultiInv extends JavaPlugin{
     	}
     	
     	debugger.saveDebugLog();
-        log.info("["+ pluginName + "] Plugin disabled.");
+        log.log(Level.INFO, "[{0}] Plugin disabled.", pluginName);
     }
 
     @Override
@@ -61,9 +62,9 @@ public class MultiInv extends JavaPlugin{
         pluginName = pdfFile.getName();
         fileReader.loadConfig();
         if (getServer().getOnlinePlayers().length > 0){
-        	Boolean shares = fileReader.parseShares();
-        	if (shares){
-        		MultiInv.log.info("["+ MultiInv.pluginName + "] Shared worlds loaded with no errors");
+        	Boolean localShares = fileReader.parseShares();
+        	if (localShares){
+        		MultiInv.log.log(Level.INFO, "[{0}] Shared worlds loaded with no errors", MultiInv.pluginName);
         		this.shares = 1;
         	}
         	this.shares = 2;
