@@ -49,11 +49,13 @@ public class MultiInvPlayerListener extends PlayerListener{
 	    	Player player = event.getPlayer();
 	    	player.setHealth(10);	    	
 	    	String worldFrom = event.getFrom().getWorld().getName();
-	    	plugin.debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
+                if(!(worldTo.equals(worldFrom))){
+                    plugin.debugger.debugEvent(MultiInvEvent.WORLD_CHANGE, 
 		   			 new String[]{player.getName(), worldFrom, worldTo});
+                }
 	    	if (plugin.sharesMap.containsKey(worldTo)){
-	    		worldTo = plugin.sharesMap.get(worldTo);
-	    	}
+                        worldTo = plugin.sharesMap.get(worldTo);
+                }
 	    	if (plugin.sharesMap.containsKey(worldFrom)){
 	    		worldFrom = plugin.sharesMap.get(worldFrom);
 	    	}
@@ -66,6 +68,7 @@ public class MultiInvPlayerListener extends PlayerListener{
     	}
     }
     
+    @Override
     public void onPlayerRespawn(PlayerRespawnEvent event){
     	String worldTo = event.getRespawnLocation().getWorld().getName();
     	String worldFrom = event.getPlayer().getWorld().getName();

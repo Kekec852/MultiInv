@@ -27,7 +27,7 @@ public class MultiInv extends JavaPlugin{
      final MultiInvPlayerData playerInventory = new MultiInvPlayerData(this);
      final MultiInvWorldListener worldListener = new MultiInvWorldListener(this); 
      final MultiInvDebugger debugger = new MultiInvDebugger(this);
-     final MultiInvReader fileReader = new MultiInvReader(this, this.getFile());
+     MultiInvReader fileReader;
      final MultiInvCommands commands = new MultiInvCommands(this);
      ConcurrentHashMap<String, MultiInvInventory> currentInventories = new ConcurrentHashMap<String, MultiInvInventory>();
      ConcurrentHashMap<String, String> sharesMap = new ConcurrentHashMap<String, String>();
@@ -35,13 +35,14 @@ public class MultiInv extends JavaPlugin{
      static PermissionHandler Permissions = null;
      static final Logger log = Logger.getLogger("Minecraft");
      static String pluginName;
-     boolean permissionsEnabled = false;
+     boolean permissionsEnabled = true;
      public boolean segregateHealth;
      public boolean segregateInventories;
      
      // 0 = unloaded, 1 = loaded successfully, 2 = loaded with errors
      int shares = 0;
      
+    @Override
      public void onLoad(){
     	
      }
@@ -53,18 +54,19 @@ public class MultiInv extends JavaPlugin{
     	}
     	
     	debugger.saveDebugLog();
-        log.log(Level.INFO, "[{0}] Plugin disabled.", pluginName);
+        log.info( "["+ pluginName + "] Plugin disabled.");
     }
 
     @Override
     public void onEnable() {
+        fileReader = new MultiInvReader(this, this.getFile());
         PluginDescriptionFile pdfFile = this.getDescription();
         pluginName = pdfFile.getName();
         fileReader.loadConfig();
         if (getServer().getOnlinePlayers().length > 0){
         	Boolean localShares = fileReader.parseShares();
         	if (localShares){
-        		MultiInv.log.log(Level.INFO, "[{0}] Shared worlds loaded with no errors", MultiInv.pluginName);
+        		log.info("["+ pluginName + "] Shared worlds loaded with no errors");
         		this.shares = 1;
         	}
         	this.shares = 2;
@@ -99,6 +101,7 @@ public class MultiInv extends JavaPlugin{
         }
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         String[] trimmedArgs = args;
         String commandName = command.getName().toLowerCase();
@@ -121,8 +124,8 @@ public class MultiInv extends JavaPlugin{
     }
     boolean permissionCheck(Player player, String node, Boolean loud){
     	if (permissionsEnabled == true && !Permissions.has(player, node)){
-    		if (loud)
-    			player.sendMessage("You do not have permission to use this command");
+            if (loud)
+                player.sendMessage("You do not have permission to use this command");
             return false;
         }else if(!player.isOp()){
         	if (loud)
@@ -134,7 +137,7 @@ public class MultiInv extends JavaPlugin{
     
      private boolean performCheck(CommandSender sender, String[] split) { 
     	 if (split.length == 0) {
-             sender.sendMessage("Type a command to utalise MultiInv'");
+             sender.sendMessage("Type a command to utalize MultiInv'");
              return true;
     	 }
          if (sender instanceof Player){
@@ -153,9 +156,10 @@ public class MultiInv extends JavaPlugin{
         	 commandPermissions.put("unignore", "MultiInv.admin.debug");
         	 commandPermissions.put("addshare", "MultiInv.admin.shares");
         	 commandPermissions.put("removeshare", "MultiInv.admin.shares");
+                 commandPermissions.put("debug", "MultiInv.admin.debug");
         	 
-        	 if (commandPermissions.containsKey(split[1])){
-        		 String permission = commandPermissions.get(split[1].toLowerCase());
+        	 if (commandPermissions.containsKey(split[0])){
+        		 String permission = commandPermissions.get(split[0].toLowerCase());
         		 commands.playerCommand(sender, split, permission);
         	 }
          }else{
@@ -197,8 +201,9 @@ public class MultiInv extends JavaPlugin{
 	 }
 	 
 	 void loadPermissions(Player player){
-		 if(permissionCheck(player, "MultiInv.state.ignore", false)){
+		 if(permissionCheck(player, "MultiInv.state.ignore", true)){
 			 if (!ignoreList.contains(player.getName())){
+                                System.out.println("Player is being ignored");
 				 ignoreList.add(player.getName());
 			 }
 		 }
